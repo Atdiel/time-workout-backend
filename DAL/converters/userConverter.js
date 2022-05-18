@@ -75,6 +75,21 @@ const toDto = (userEntity) => {
     nationality,
     timestamp,
   } = userEntity;
+  const formatedBirthday = birthday.toISOString().split("T").shift();
+  const userDto = new UserDto(
+    userId,
+    name,
+    lastName,
+    password,
+    email,
+    gender,
+    formatedBirthday,
+    profilePicture,
+    nationality,
+    timestamp
+  );
+
+  return userDto;
 };
 
-module.exports = { toEntity };
+module.exports = { toEntity, toDto };

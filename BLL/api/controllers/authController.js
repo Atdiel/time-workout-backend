@@ -1,8 +1,6 @@
 const { matchedData } = require("express-validator");
-const { hashPassword, comparePassword } = require("../handlers/handlePassword");
-const { signToken } = require("../handlers/handleJwt");
 const { handleHttpError } = require("../handlers/handleError");
-const { userModel } = require("../../../DAL/models");
+const authService = require("../../businessServices/authService");
 
 /**
  * Se encarga de registrar al usuario y crear su token
@@ -11,19 +9,10 @@ const { userModel } = require("../../../DAL/models");
  */
 const registerUser = async (req, res) => {
   try {
-    req = matchedData(req);
-    const hashedPassword = await hashPassword(req.password);
-    const body = { ...req, password: hashedPassword };
-    //TODO: crear la conexion con un modelo de la base de datos
-    const dataUser = await userModel.create(body);
-    //dataUser.set("password", undefined, { strict: false });
-
-    // let dataUser = require("../dummyDB/user.json");
-    const data = {
-      token: await signToken(dataUser),
-      //TODO: configurar el output de la api aqui:
-      user: body,
-    };
+    // Limpiamos la @req dejando solo campos autorizados por validator-middleware
+    const userData = matchedData(req);
+    //[x] Usamos el servicio para gestionar el registro de usuario
+    const data = await authService.userSignUp(userData);
 
     res.send({ data });
   } catch (err) {
@@ -40,41 +29,9 @@ const registerUser = async (req, res) => {
  */
 const loginUser = async (req, res) => {
   try {
-    req = matchedData(req);
-    //TODO: configurar el modelo para recupera datos de user
-    //const user = await userModel
-    //  .findOne({ email: req.email })
-    //  .select("name password email role");
-
-    //TODO: logica eliminada hasta crear el modelo de DB
-    /*
-    if (!user) {
-      return handleHttpError(res, "Correo no encontrado", 401);
-    }
-    // verificar las contraseñas
-    const hashedPassword = user.password;
-    user.set("password", undefined, { strict: false }); // solo necesitamos el password para el compare
-    const check = await comparePassword(req.password, hashedPassword);
-    if (!check) {
-      return handleHttpError(res, "Contraseña incorrecta", 401);
-    }
-
-    //TODO: si todo esta bien podemos mandar la data con el token generado
-    const data = {
-      token: await signToken(user),
-      user,
-    };
-    */
-
-    //TODO: luego de configurar models borrar hasta @res.send();
-    let dummyUser = require("../dummyDB/user.json");
-    if (req.email != dummyUser.email || req.password != dummyUser.password) {
-      return handleHttpError(res, "CREDENCIALES_INVALIDAS", "", 401);
-    }
-    const data = {
-      token: await signToken(dummyUser),
-      user: dummyUser,
-    };
+    const userData = matchedData(req);
+    //[x]: configurar el servicio para autenticar usuario
+    const data = await authService.userSignIn(userData);
 
     res.send({ data });
   } catch (err) {
@@ -84,15 +41,12 @@ const loginUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { id } = req.user;
-    req = matchedData(req);
-    const body = req;
-    let dummyUser = require("../dummyDB/user.json");
+    const userId = req.user.id;
+    const userData = matchedData(req);
+    //[x]: Creamos un service para actualizar un usuario
+    const data = await authService.updateAccount(userId, userData);
 
-    if (id != dummyUser.userId) {
-      return handleHttpError(res, "USER_ID_NOT_FOUN");
-    }
-    res.send({ body });
+    res.send({ data });
   } catch (err) {
     handleHttpError(res, "ERROR_UPDATE_USER", err);
   }
