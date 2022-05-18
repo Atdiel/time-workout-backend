@@ -2,6 +2,11 @@ const { userModel } = require("../../DAL/models");
 const { hashPassword, comparePassword } = require("../helpers/passwordHelper");
 const { signToken } = require("../helpers/jwtHelper");
 
+/**
+ *
+ * @param {*} userData
+ * @returns
+ */
 const userSignUp = async (userData) => {
   "use strict";
   try {
@@ -79,6 +84,13 @@ const updateAccount = async (accountId, userData) => {
     if (!userFound) {
       throw Error("Usuario no encontrado");
     }
+    const ownUserEmail = userFound.email;
+    //FIXME: 2.5 asegurarse que no este introduciendo un correo ya registrado a menos que sea el suyo.
+    var userFoundSameEmail = await userModel.findOne({ email: userData.email });
+    if (userFoundSameEmail.email !== ownUserEmail) {
+      throw Error("Este Correo ya se a registrado");
+    }
+
     //[x]: 3. encriptar la password.
     const plainPassword = userData.password;
     const hashedPassword = await hashPassword(plainPassword);
@@ -89,15 +101,17 @@ const updateAccount = async (accountId, userData) => {
     await userModel.update(accountId, userData);
 
     //[x]: 5. mandar los nuevos datos del usuario al Frontend.
-    var userFound = await userModel.findOne({ userId: accountId });
+    var userUpdated = await userModel.findOne({ userId: accountId });
+
     const data = {
-      ...userFound,
+      ...userUpdated,
       password: plainPassword,
       timestamp: undefined,
     };
 
     return data;
   } catch (err) {
+    console.error(err);
     throw new Error("AUTH_SERVICE: UPDATE_ACCOUNT_ERROR");
   }
 };

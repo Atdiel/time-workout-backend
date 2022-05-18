@@ -55,7 +55,7 @@ const search = async (keyToSearch, valueToSearch) => {
   }
 };
 
-const shift = async (userId, userEntity) => {
+const shift = (userId, userEntity) => {
   return new Promise(async (resolve, reject) => {
     // Primero dividimos todas las propiedades de @userEntity en constantes
     const name = userEntity.name;
