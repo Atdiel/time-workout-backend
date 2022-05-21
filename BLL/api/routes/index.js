@@ -13,7 +13,6 @@ const PATH_ROUTES = __dirname;
  * @returns
  */
 const removeExtension = (filename) => {
-  //TODO tracks.js ["tracks", "js"]
   return filename.split(".").shift();
 };
 
@@ -21,7 +20,7 @@ const removeExtension = (filename) => {
  * leemos las rutas dinamicamente -> router.use("/ruta", require("ruta"))
  */
 fs.readdirSync(PATH_ROUTES).filter((file) => {
-  const name = removeExtension(file); //TODO users, storage, tracks
+  const name = removeExtension(file);
   if (name !== "index") {
     router.use(`/${name}`, require(`./${file}`));
   }

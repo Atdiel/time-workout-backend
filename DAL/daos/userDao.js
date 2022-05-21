@@ -1,5 +1,4 @@
 const con = require("../config/mysql");
-const User = require("../pojos/userEntity");
 
 /**
  * Mandar por parametro la @class entidad (pojo)

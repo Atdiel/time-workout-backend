@@ -85,7 +85,7 @@ const updateAccount = async (accountId, userData) => {
       throw Error("Usuario no encontrado");
     }
     const ownUserEmail = userFound.email;
-    //FIXME: 2.5 asegurarse que no este introduciendo un correo ya registrado a menos que sea el suyo.
+    //[x]: 2.5 asegurarse que no este introduciendo un correo ya registrado a menos que sea el suyo.
     var userFoundSameEmail = await userModel.findOne({ email: userData.email });
     if (userFoundSameEmail.email !== ownUserEmail) {
       throw Error("Este Correo ya se a registrado");
