@@ -1,118 +1,105 @@
-module.exports = class challenge  {
-    challengeId;
-    userId;
-    tittle;
-    description;
-    followers;
-    startDate;
-    endDate;
-    days;
-    timestamp;
+module.exports = class Challenge {
+  challengeId;
+  userId;
+  tittle;
+  description;
+  followers;
+  startDate;
+  endDate;
+  days;
+  timestamp;
 
-   
-    
-    constructor(
-    challengeId,
+  constructor(
+    challengeId = undefined,
     userId,
     tittle,
     description,
-    followers,
+    followers = undefined,
     startDate,
     endDate,
-    days,
-    timestamp,
-    ) {
-      this.challengeId = challengeId;
-      this.userId = userId;
-      this.tittle = tittle;
-      this.description = description;
-      this.followers = followers;
-      this.startDate = startDate;
-      this.endDate = endDate;
-      this.days = days;
-      this.timestamp = timestamp;
-    }
-    
-    get challengeId() {
-      return this.challengeId;
-    }
-    
-    set challengeId(challengeId) {
-      this.challengeId = challengeId;
-    }
-  
-    get userId () {
-      return this.userId ;
-    }
-    
-    set userId (userId ) {
-      this.userId  = userId ;
-    }
-  
-    get tittle() {
-      return this.tittle;
-    }
-    
-    set tittle(tittle) {
-      this.title =tittle;
-    }
-    
-    get description() {
-        return this.description;
-      }
-      
-      set description(description) {
-        this.description =description;
-      }
+    days = undefined,
+    timestamp = undefined
+  ) {
+    this.challengeId = challengeId;
+    this.userId = userId;
+    this.tittle = tittle;
+    this.description = description;
+    this.followers = followers;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.days = days;
+    this.timestamp = timestamp;
+  }
 
-      get followers() {
-        return this.followers;
-      }
-      
-      set followers(followers) {
-        this.followers =followers;
-      }  
+  get challengeId() {
+    return this.challengeId;
+  }
 
-      get startDate() {
-        return this.startDate;
-      }
-      
-      set startDate(startDate) {
-        this.startDate =startDate;
-      } 
+  set challengeId(challengeId) {
+    this.challengeId = challengeId;
+  }
 
-      get endDate() {
-        return this.endDate;
-      }
-      
-      set endDate(endDate) {
-        this.endDate =endDate;
-      } 
+  get userId() {
+    return this.userId;
+  }
 
-      get endDate() {
-        return this.endDate;
-      }
-      
-      set endDate(endDate) {
-        this.endDate =endDate;
-      } 
+  set userId(userId) {
+    this.userId = userId;
+  }
 
-      get days() {
-        return this.days;
-      }
-      
-      set days(days) {
-        this.days =days;
-      }
-      
-      get timestamp() {
-        return this.timestamp;
-      }
-      
-      set timestamp(timestamp) {
-        this.timestamp =timestamp;
-      } 
+  get tittle() {
+    return this.tittle;
+  }
 
+  set tittle(tittle) {
+    this.title = tittle;
+  }
 
-    
-  };
+  get description() {
+    return this.description;
+  }
+
+  set description(description) {
+    this.description = description;
+  }
+
+  get followers() {
+    return this.followers;
+  }
+
+  set followers(followers) {
+    this.followers = followers;
+  }
+
+  get startDate() {
+    return this.startDate;
+  }
+
+  set startDate(startDate) {
+    this.startDate = startDate;
+  }
+
+  get endDate() {
+    return this.endDate;
+  }
+
+  set endDate(endDate) {
+    this.endDate = endDate;
+  }
+
+  get days() {
+    return this.days;
+  }
+
+  set days(days) {
+    this.days = days;
+  }
+
+  get timestamp() {
+    return this.timestamp;
+  }
+
+  set timestamp(timestamp) {
+    this.timestamp = timestamp;
+  }
+};
