@@ -47,7 +47,7 @@ const toEntity = (userDto) => {
    *
    * Se crea la entidad con su Constructor.
    */
-  userEntity = new User(
+  const userEntity = new User(
     undefined,
     name,
     lastName,
