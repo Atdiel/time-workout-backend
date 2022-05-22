@@ -22,19 +22,19 @@ const tabataValidator = [
     .exists()
     .notEmpty()
     .withMessage("missing effortTime")
-    .isNumeric()
+    .isInt()
     .isLength({ max: 3 }),
   check("rounds")
     .exists()
     .notEmpty()
     .withMessage("missing rounds")
-    .isNumeric()
+    .isInt()
     .isLength({ max: 2 }),
   check("restTime")
     .exists()
     .notEmpty()
     .withMessage("missing restTime")
-    .isNumeric()
+    .isInt()
     .isLength({ max: 3 }),
   check("exercises.exercises").exists().isArray(),
   check("exercises.exercises").custom((exercises) => {
