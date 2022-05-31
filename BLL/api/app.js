@@ -10,7 +10,7 @@ app.use(express.json());
 /**
  * se usa el puerto definido en .env (default 3000)
  */
-const port = process.env.EXPRESS_PORT || 3000;
+const port = process.env.PORT || 3000;
 
 /**
  * route homepage
