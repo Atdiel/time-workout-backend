@@ -5,8 +5,11 @@ const handleResults = (req, res, next) => {
     validationResult(req).throw();
     return next();
   } catch (err) {
-    res.status(403);
-    res.send({ errors: err.array() });
+    const data = {
+      success: false,
+      errors: err.array(),
+    };
+    res.status(403).send(data);
   }
 };
 
