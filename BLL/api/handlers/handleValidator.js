@@ -9,7 +9,7 @@ const handleResults = (req, res, next) => {
       success: false,
       errors: err.array(),
     };
-    res.status(403).send(data);
+    res.status(403).send({ data });
   }
 };
 
