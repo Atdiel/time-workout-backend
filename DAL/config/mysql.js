@@ -8,7 +8,7 @@ const dbconf = {
   database: process.env.DB_NAME,
 };
 
-const connection = mysql.createPool(dbconf);
+const connection = mysql.createConnection(dbconf);
 
 const getConnection = () => {
   return connection;
