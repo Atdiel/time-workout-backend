@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "forever start nodemon --exitcrash ./BLL/api/app.js",
+    "start": "nodemon ./BLL/api/app.js",
     "dev": "nodemon ./BLL/api/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
