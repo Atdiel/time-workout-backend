@@ -1,4 +1,5 @@
-const con = require("../config/mysql");
+// const con = require("../config/mysql");
+const { getConnection } = require("../config/mysql");
 
 /**
  * Mandar por parametro la @class entidad (pojo)
@@ -7,6 +8,8 @@ const con = require("../config/mysql");
  */
 const store = (userEntity) => {
   return new Promise(async (resolve, reject) => {
+    const con = await getConnection();
+
     // Primero dividimos todas las propiedades de @userEntity en constantes
     const name = userEntity.name;
     const lastName = userEntity.lastName;
@@ -46,6 +49,7 @@ const store = (userEntity) => {
 
 const search = async (keyToSearch, valueToSearch) => {
   try {
+    const con = await getConnection();
     const query = `SELECT * FROM user WHERE ${keyToSearch} = ?;`;
     const searchResult = await con.query(query, [valueToSearch]);
     return searchResult[0];
@@ -56,6 +60,8 @@ const search = async (keyToSearch, valueToSearch) => {
 
 const shift = (userId, userEntity) => {
   return new Promise(async (resolve, reject) => {
+    const con = await getConnection();
+
     // Primero dividimos todas las propiedades de @userEntity en constantes
     const name = userEntity.name;
     const lastName = userEntity.lastName;

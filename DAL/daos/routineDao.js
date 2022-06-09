@@ -1,4 +1,5 @@
-const con = require("../config/mysql");
+// const con = require("../config/mysql");
+const { getConnection } = require("../config/mysql");
 
 /**
  * > Almacenar en la base de datos una entidad
@@ -7,6 +8,8 @@ const con = require("../config/mysql");
  */
 const store = (routineEntity) => {
   return new Promise(async (resolve, reject) => {
+    const con = await getConnection();
+
     const userId = routineEntity.userId;
     const tittle = routineEntity.tittle;
     const privacy = routineEntity.privacy;
@@ -29,6 +32,8 @@ const store = (routineEntity) => {
  */
 const search = async (keyToSearch, valueToSearch) => {
   try {
+    const con = await getConnection();
+
     const query = `SELECT * FROM routine WHERE ${keyToSearch} = ?;`;
     const searchResult = await con.query(query, [valueToSearch]);
     return searchResult[0];
@@ -44,6 +49,8 @@ const search = async (keyToSearch, valueToSearch) => {
  */
 const acquire = async (userId) => {
   try {
+    const con = await getConnection();
+
     const query = "SELECT * FROM `routine` WHERE userId = ?;";
     const dataCatched = await con.query(query, [userId]);
     return dataCatched;
@@ -55,6 +62,8 @@ const acquire = async (userId) => {
  */
 const shift = async (routineEntity) => {
   try {
+    const con = await getConnection();
+
     const routineId = routineEntity.routineId;
     const tittle = routineEntity.tittle;
     const privacy = routineEntity.privacy;
@@ -80,6 +89,8 @@ const shift = async (routineEntity) => {
  */
 const removeOne = async (routineId) => {
   try {
+    const con = await getConnection();
+
     const query = "DELETE FROM `routine` WHERE `routineId` = ?;";
     await con.query(query, [routineId]);
   } catch (err) {

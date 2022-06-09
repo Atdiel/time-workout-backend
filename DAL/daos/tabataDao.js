@@ -1,7 +1,10 @@
-const con = require("../config/mysql");
+// const con = require("../config/mysql");
+const { getConnection } = require("../config/mysql");
 
 const store = (tabataEntity) => {
   return new Promise(async (resolve, reject) => {
+    const con = await getConnection();
+
     const userId = tabataEntity.userId;
     const tittle = tabataEntity.tittle;
     const privacy = tabataEntity.privacy;
@@ -20,6 +23,8 @@ const store = (tabataEntity) => {
 
 const search = async (keyToSearch, valueToSearch) => {
   try {
+    const con = await getConnection();
+
     const query = `SELECT * FROM tabata WHERE ${keyToSearch} = ?;`;
     const searchResult = await con.query(query, [valueToSearch]);
     return searchResult[0];
@@ -30,6 +35,8 @@ const search = async (keyToSearch, valueToSearch) => {
 
 const acquire = async (userId) => {
   try {
+    const con = await getConnection();
+
     const query = "SELECT * FROM `tabata` WHERE userId = ?;";
     const dataCatched = await con.query(query, [userId]);
     return dataCatched;
@@ -38,6 +45,8 @@ const acquire = async (userId) => {
 
 const shift = async (tabataEntity) => {
   try {
+    const con = await getConnection();
+
     const tabataId = tabataEntity.tabataId;
     const tittle = tabataEntity.tittle;
     const privacy = tabataEntity.privacy;
@@ -65,6 +74,8 @@ const shift = async (tabataEntity) => {
 
 const removeOne = async (tabataId) => {
   try {
+    const con = await getConnection();
+
     const query = "DELETE FROM `tabata` WHERE `tabataId` = ?;";
     await con.query(query, [tabataId]);
   } catch (err) {

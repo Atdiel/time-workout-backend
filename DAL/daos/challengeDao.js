@@ -1,4 +1,5 @@
-const con = require("../config/mysql");
+// const con = require("../config/mysql");
+const { getConnection } = require("../config/mysql");
 
 /**
  * > Almacenar en la base de datos una entidad
@@ -7,6 +8,8 @@ const con = require("../config/mysql");
  */
 const store = (challengeEntity) => {
   return new Promise(async (resolve, reject) => {
+    const con = await getConnection();
+
     const userId = challengeEntity.userId;
     const tittle = challengeEntity.tittle;
     const description = challengeEntity.description;
@@ -31,6 +34,8 @@ const store = (challengeEntity) => {
  */
 const search = async (keyToSearch, valueToSearch) => {
   try {
+    const con = await getConnection();
+
     const query = `SELECT * FROM challenge WHERE ${keyToSearch} = ?;`;
     const searchResult = await con.query(query, [valueToSearch]);
     return searchResult[0];
@@ -46,6 +51,8 @@ const search = async (keyToSearch, valueToSearch) => {
  */
 const acquire = async (userId) => {
   try {
+    const con = await getConnection();
+
     const query = "SELECT * FROM `challenge` WHERE userId = ?;";
     const dataCatched = await con.query(query, [userId]);
     return dataCatched;
@@ -57,6 +64,8 @@ const acquire = async (userId) => {
  */
 const shift = async (challengeEntity) => {
   try {
+    const con = await getConnection();
+
     const challengeId = challengeEntity.challengeId;
     const tittle = challengeEntity.tittle;
     const description = challengeEntity.description;
@@ -86,6 +95,8 @@ const shift = async (challengeEntity) => {
  */
 const removeOne = async (challengeId) => {
   try {
+    const con = await getConnection();
+
     const query = "DELETE FROM `challenge` WHERE `challengeId` = ?;";
     await con.query(query, [challengeId]);
   } catch (err) {

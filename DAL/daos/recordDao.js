@@ -1,5 +1,5 @@
-const con = require("../config/mysql");
-
+// const con = require("../config/mysql");
+const { getConnection } = require("../config/mysql");
 /**
  * > Almacenar en la base de datos una entidad
  * @param {Object: Record} recordEntity
@@ -7,6 +7,8 @@ const con = require("../config/mysql");
  */
 const store = (recordEntity) => {
   return new Promise(async (resolve, reject) => {
+    const con = await getConnection();
+
     const userId = recordEntity.userId;
     const tittle = recordEntity.tittle;
     const description = recordEntity.description;
@@ -28,6 +30,8 @@ const store = (recordEntity) => {
  */
 const search = async (keyToSearch, valueToSearch) => {
   try {
+    const con = await getConnection();
+
     const query = `SELECT * FROM record WHERE ${keyToSearch} = ?;`;
     const searchResult = await con.query(query, [valueToSearch]);
     return searchResult[0];
@@ -43,6 +47,8 @@ const search = async (keyToSearch, valueToSearch) => {
  */
 const acquire = async (userId) => {
   try {
+    const con = await getConnection();
+
     const query = "SELECT * FROM `record` WHERE userId = ?;";
     const dataCatched = await con.query(query, [userId]);
     return dataCatched;
@@ -56,7 +62,8 @@ const acquire = async (userId) => {
  */
 const shift = async (recordEntity) => {
   try {
-    console.log(recordEntity);
+    const con = await getConnection();
+
     const recordId = recordEntity.recordId;
     const tittle = recordEntity.tittle;
     const description = recordEntity.description;
@@ -77,6 +84,8 @@ const shift = async (recordEntity) => {
  */
 const removeOne = async (recordId) => {
   try {
+    const con = await getConnection();
+
     const query = "DELETE FROM `record` WHERE `recordId` = ?;";
     await con.query(query, [recordId]);
   } catch (err) {
