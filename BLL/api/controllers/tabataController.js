@@ -1,43 +1,67 @@
 const { matchedData } = require("express-validator");
 const tabataService = require("../../businessServices/tabataService");
 
+/**
+ * ? crear una tabata para un usuario
+ * @param {*} req
+ * @param {*} res
+ */
 const createTabata = async (req, res) => {
   try {
+    //* primero guardamos el id antes matchear la request
     const userId = req.user.id;
+    //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const tabataData = matchedData(req);
-    //[x]: Creamos servicio para crear una tabata.
+    //FIXME no debe retornar nada
     const data = await tabataService.newTabata(userId, tabataData);
-    res.send({ data });
+    res.send({ success: true });
   } catch (err) {}
 };
 
+/**
+ * ? enviar al usuario todas sus tabatas
+ * @param {*} req
+ * @param {*} res
+ */
 const readTabata = async (req, res) => {
   try {
     const userId = req.user.id;
-    //[x]: Creamos servicio para consultar tabatas de usuario.
     const data = await tabataService.myTabatas(userId);
-    res.send({ data });
+    res.send({ success: true, data });
   } catch (err) {}
 };
 
+/**
+ * ? editar los datos de una tabata para un usuario
+ * @param {*} req
+ * @param {*} res
+ */
 const updateTabata = async (req, res) => {
   try {
+    //* primero guardamos el id antes matchear la request
     const userId = req.user.id;
+    //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const tabataId = matchedData(req).tabataid;
     const tabataData = matchedData(req);
-    //[x]: Creamos servicio para editar tabata de usuario.
+    //FIXME el servicio no debe retornar ningun valor
     const data = await tabataService.editTabata(userId, tabataId, tabataData);
-    res.send({ data });
+    res.send({ success: true });
   } catch (err) {}
 };
 
+/**
+ * ? eliminar una tabata para un usuario
+ * @param {*} req
+ * @param {*} res
+ */
 const deleteTabata = async (req, res) => {
   try {
+    //* primero guardamos el id antes matchear la request
     const userId = req.user.id;
+    //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const tabataId = matchedData(req).tabataid;
-    //[x]: Creamos servicio para eliminar una tabata de usuario.
     await tabataService.removeTabata(userId, tabataId);
-    res.send();
+    res.send({ success: true });
   } catch (err) {}
 };
 

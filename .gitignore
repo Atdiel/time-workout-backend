@@ -1,3 +1,4 @@
 node_modules/
 .env
 BLL/api/http.txt
+.vscode/
