@@ -70,44 +70,46 @@ const userSignIn = (userData) => {
   });
 };
 
-const updateAccount = async (accountId, userData) => {
-  "use strict";
-  try {
-    //[x]: 2. usar el id de el token para verificar que exista el usuario.
-    var userFound = await userModel.findOne({ userId: accountId });
-    if (!userFound) {
-      throw Error("Usuario no encontrado");
+/**
+ * ? reglas de negocio para modificar datos de un usuario
+ * @param {Number} accountId
+ * @param {Object} userData
+ * @returns {Promise}
+ */
+const updateAccount = (accountId, userData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: usar el id de el token para verificar que exista el usuario.
+      var userFoundById = await userModel.findOne({ userId: accountId });
+      if (!userFoundById) {
+        reject(["Usuario no encontrado", null]);
+      }
+
+      //COMMENT: asegurarse que no este introduciendo un correo ya registrado a menos que sea el suyo.
+      if (userFoundById.email !== userData.email) {
+        var checkEmailExist = await userModel.findOne({
+          email: userData.email,
+        });
+        if (checkEmailExist) {
+          reject(["Este Correo ya se a registrado", null]);
+        }
+      }
+
+      //COMMENT: encriptar la password.
+      const plainPassword = userData.password;
+      const hashedPassword = await hashPassword(plainPassword);
+      // Reemplazamos el valor de password por la password ya encriptada
+      userData = { ...userData, password: hashedPassword };
+
+      //COMMENT: actualizar todos los datos del usuario.
+      await userModel.update(accountId, userData);
+
+      resolve();
+    } catch (err) {
+      reject(["Error del servidor", err]);
     }
-    const ownUserEmail = userFound.email;
-    //[x]: 2.5 asegurarse que no este introduciendo un correo ya registrado a menos que sea el suyo.
-    var userFoundSameEmail = await userModel.findOne({ email: userData.email });
-    if (userFoundSameEmail.email !== ownUserEmail) {
-      throw Error("Este Correo ya se a registrado");
-    }
-
-    //[x]: 3. encriptar la password.
-    const plainPassword = userData.password;
-    const hashedPassword = await hashPassword(plainPassword);
-    // Reemplazamos el valor de password por la password ya encriptada
-    userData = { ...userData, password: hashedPassword };
-
-    //[x]: 4. actualizar todos los datos del usuario.
-    await userModel.update(accountId, userData);
-
-    //[x]: 5. mandar los nuevos datos del usuario al Frontend.
-    var userUpdated = await userModel.findOne({ userId: accountId });
-
-    const data = {
-      ...userUpdated,
-      password: plainPassword,
-      timestamp: undefined,
-    };
-
-    return data;
-  } catch (err) {
-    console.error(err);
-    throw new Error("AUTH_SERVICE: UPDATE_ACCOUNT_ERROR");
-  }
+  });
 };
 
 module.exports = { userSignUp, userSignIn, updateAccount };

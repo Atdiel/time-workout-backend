@@ -54,12 +54,14 @@ const updateUser = async (req, res) => {
     const userId = req.user.id;
     //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const userData = matchedData(req);
-    //FIXME tampoco debe devolver ningun resultado, excepto que se cumplio sin error
-    const data = await authService.updateAccount(userId, userData);
 
+    await authService.updateAccount(userId, userData);
     res.send({ success: true });
   } catch (err) {
-    handleHttpError(res, "ERROR_UPDATE_USER", err);
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+    // handleHttpError(res, "ERROR_UPDATE_USER", err);
   }
 };
 

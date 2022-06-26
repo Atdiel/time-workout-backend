@@ -51,11 +51,11 @@ const update = (userId, userObject) => {
   return new Promise((resolve, reject) => {
     const userEntity = toEntity(userObject);
     shift(userId, userEntity)
-      .then(function () {
+      .then(() => {
         return resolve();
       })
-      .catch(function (error) {
-        return reject(error);
+      .catch((err) => {
+        return reject(err);
       });
   });
 };

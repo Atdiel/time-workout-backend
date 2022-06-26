@@ -66,44 +66,57 @@ const search = (keyToSearch, valueToSearch) => {
 
 const shift = (userId, userEntity) => {
   return new Promise(async (resolve, reject) => {
-    const con = await getConnection();
+    try {
+      const con = await getConnection();
 
-    // Primero dividimos todas las propiedades de @userEntity en constantes
-    const name = userEntity.name;
-    const lastName = userEntity.lastName;
-    const password = userEntity.password;
-    const email = userEntity.email;
-    const gender = userEntity.gender;
-    const birthday = userEntity.birthday;
-    const profilePicture = userEntity.profilePicture;
-    const nationality = userEntity.nationality;
+      // Primero dividimos todas las propiedades de @userEntity en constantes
+      const name = userEntity.name;
+      const lastName = userEntity.lastName;
+      const password = userEntity.password;
+      const email = userEntity.email;
+      const gender = userEntity.gender;
+      const birthday = userEntity.birthday;
+      const profilePicture = userEntity.profilePicture;
+      const nationality = userEntity.nationality;
 
-    // verificamos que exista el atributo @profilePicture para evitar errores
-    //FIXME: Siempre pasar por la request el valor de @profilePicture
-    if (!profilePicture) {
-      await con.query(
-        //UPDATE `user` SET `name` = ?, `lastname` = ?, `password` = ?, `email` = ?, `gender` = ?, `birthday` = ?, `nationality` = ?, WHERE `userId` = ?;
-        "UPDATE `user` SET `name` = ?, `lastname` = ?, `password` = ?, `email` = ?, `gender` = ?, `birthday` = ?, `nationality` = ? WHERE `userId` = ?;",
-        [name, lastName, password, email, gender, birthday, nationality, userId]
-      );
-    } else {
-      await con.query(
-        "UPDATE `user` SET `name` = ?, `lastname` = ?, `password` = ?, `email` = ?, `gender` = ?, `birthday` = ?, `profilePicture` = ?, `nationality` = ? WHERE `userId` = ?;",
-        [
-          name,
-          lastName,
-          password,
-          email,
-          gender,
-          birthday,
-          profilePicture,
-          nationality,
-          userId,
-        ]
-      );
+      // verificamos que exista el atributo @profilePicture para evitar errores
+      //FIXME: Siempre pasar por la request el valor de @profilePicture
+      if (!profilePicture) {
+        await con.query(
+          //UPDATE `user` SET `name` = ?, `lastname` = ?, `password` = ?, `email` = ?, `gender` = ?, `birthday` = ?, `nationality` = ?, WHERE `userId` = ?;
+          "UPDATE `user` SET `name` = ?, `lastname` = ?, `password` = ?, `email` = ?, `gender` = ?, `birthday` = ?, `nationality` = ? WHERE `userId` = ?;",
+          [
+            name,
+            lastName,
+            password,
+            email,
+            gender,
+            birthday,
+            nationality,
+            userId,
+          ]
+        );
+      } else {
+        await con.query(
+          "UPDATE `user` SET `name` = ?, `lastname` = ?, `password` = ?, `email` = ?, `gender` = ?, `birthday` = ?, `profilePicture` = ?, `nationality` = ? WHERE `userId` = ?;",
+          [
+            name,
+            lastName,
+            password,
+            email,
+            gender,
+            birthday,
+            profilePicture,
+            nationality,
+            userId,
+          ]
+        );
+      }
+
+      resolve();
+    } catch (err) {
+      reject(err);
     }
-
-    resolve();
   });
 };
 module.exports = { store, search, shift };
