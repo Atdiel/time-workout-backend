@@ -3,45 +3,33 @@ const { hashPassword, comparePassword } = require("../helpers/passwordHelper");
 const { signToken } = require("../helpers/jwtHelper");
 
 /**
- *
- * @param {*} userData
- * @returns
+ *? reglas de negocio para crear un usuario
+ * @param {Object} userData
+ * @returns {Promise}
  */
-const userSignUp = async (userData) => {
-  "use strict";
-  try {
-    //[x] Encriptamos la contraseña para su posterior almacenamiento
-    const hashedPassword = await hashPassword(userData.password);
-    // Reemplazamos el valor de password por la password ya encriptada
-    userData = { ...userData, password: hashedPassword };
+const userSignUp = (userData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: Encriptamos la contraseña para su posterior almacenamiento
+      const hashedPassword = await hashPassword(userData.password);
 
-    //[x] Verificamos que el correo no este en uso por otro usuario
-    var userFound = await userModel.findOne({ email: userData.email });
-    if (userFound) {
-      throw Error("Este Correo ya se a registrado");
+      //COMMENT: Reemplazamos el valor de password por la password ya encriptada
+      userData = { ...userData, password: hashedPassword };
+
+      //COMMENT: Verificamos que el correo no este en uso por otro usuario
+      var userFound = await userModel.findOne({ email: userData.email });
+      if (userFound) {
+        reject(["Este Correo ya esta registrado", null]);
+      }
+
+      //COMMENT: Registramos el usuario en la BD
+      await userModel.add(userData);
+      resolve();
+    } catch (err) {
+      reject(["Error del servidor", err]);
     }
-    //[x] Registramos el usuario en la BD
-    await userModel.add(userData);
-
-    //[x] Verificamos que se registró exitosamente
-    var userFound = await userModel.findOne({ email: userData.email });
-    if (!userFound) {
-      throw Error("No se pudo registrar el usuario en la base de datos");
-    }
-
-    userFound = { ...userFound, password: undefined, timestamp: undefined };
-
-    //[x] creamos token  con el helper para token JWT
-    const data = {
-      token: await signToken(userFound),
-      user: userFound,
-    };
-
-    return data;
-  } catch (err) {
-    console.error(err);
-    throw new Error("AUTH_SERVICE: USER_SIGN_UP_ERROR");
-  }
+  });
 };
 
 const userSignIn = async (userData) => {

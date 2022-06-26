@@ -11,13 +11,14 @@ const registerUser = async (req, res) => {
   try {
     //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const userData = matchedData(req);
-    //FIXME este servicio no debe devolver ninguna respuesta
-    const data = await authService.userSignUp(userData);
+    await authService.userSignUp(userData);
 
     res.send({ success: true });
   } catch (err) {
-    console.error(err);
-    handleHttpError(res, "ERROR_CONTROLADOR_AUTH", err);
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+    // handleHttpError(res, "ERROR_CONTROLADOR_AUTH", err);
   }
 };
 
