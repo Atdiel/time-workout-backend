@@ -32,36 +32,42 @@ const userSignUp = (userData) => {
   });
 };
 
-const userSignIn = async (userData) => {
-  try {
-    //[x]: 1. consultar a la base de datos por email.
-    let userFound = await userModel.findOne({ email: userData.email });
-    if (!userFound) {
-      throw Error("No existe usuario con este email");
+/**
+ * ? reglas de negocio cuando se autentica un usuario
+ * @param {Object} userData
+ * @returns {Promise}
+ */
+const userSignIn = (userData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: consultar a la base de datos por email.
+      let userFound = await userModel.findOne({ email: userData.email });
+      if (!userFound) {
+        reject(["No existe usuario con este email", null]);
+      }
+      const hashedPassword = userFound.password;
+      userFound = { ...userFound, password: undefined, timestamp: undefined };
+
+      //COMMENT: verificar que su contraseña sea la misma que la encryptada almacenada en la BD.
+      const checkValidPassword = await comparePassword(
+        userData.password,
+        hashedPassword
+      );
+      if (!checkValidPassword) {
+        reject(["Contraseña incorrecta", null]);
+      }
+
+      //COMMENT: mandamos token para futuras peticiones.
+      const data = {
+        token: await signToken(userFound),
+        userFound,
+      };
+      resolve(data);
+    } catch (err) {
+      reject(["Error del servidor", err]);
     }
-    //[x]: 2. verificar que su contraseña sea la misma que la encryptada almacenada en la BD.
-    const hashedPassword = userFound.password;
-    userFound = { ...userFound, password: undefined, timestamp: undefined };
-
-    const checkValidPassword = await comparePassword(
-      userData.password,
-      hashedPassword
-    );
-    if (!checkValidPassword) {
-      throw Error("Contraseña incorrecta");
-    }
-    //[x]: 3. mandamos token para futuras peticiones.
-
-    const data = {
-      token: await signToken(userFound),
-      userFound,
-    };
-
-    return data;
-  } catch (err) {
-    console.error(err);
-    throw new Error("AUTH_SERVICE: USER_SIGN_IN_ERROR");
-  }
+  });
 };
 
 const updateAccount = async (accountId, userData) => {

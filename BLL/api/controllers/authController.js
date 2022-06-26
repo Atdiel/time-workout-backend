@@ -26,7 +26,7 @@ const registerUser = async (req, res) => {
  * ? obtener un usuario existente usando email y password
  * @param {*} req
  * @param {*} res
- * @returns datos del usuario y token
+ * @returns {JSON} datos del usuario y token
  */
 const loginUser = async (req, res) => {
   try {
@@ -36,7 +36,10 @@ const loginUser = async (req, res) => {
 
     res.send({ success: true, data });
   } catch (err) {
-    handleHttpError(res, "ERROR_LOGIN", err);
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+    // handleHttpError(res, "ERROR_LOGIN", err);
   }
 };
 
