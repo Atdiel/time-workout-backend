@@ -91,15 +91,15 @@ const update = (challengeObject) => {
 /**
  * > Elimina registro solo con su id
  * @param {Number} challengeId
- * @returns //* void
+ * @returns {Promise}
  */
 const eraseById = (challengeId) => {
   return new Promise((resolve, reject) => {
     removeOne(challengeId)
-      .then(function () {
+      .then(() => {
         return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });

@@ -79,8 +79,13 @@ const deleteChallenge = async (req, res) => {
     const challengeId = matchedData(req).challengeid;
 
     await challengeService.removeChallenge(userId, challengeId);
+
     res.send({ success: true });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+  }
 };
 
 module.exports = {

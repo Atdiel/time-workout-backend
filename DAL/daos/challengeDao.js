@@ -35,16 +35,19 @@ const store = (challengeEntity) => {
  * @param {String || Number} valueToSearch
  * @returns //* Object de registro encontrado || undefined
  */
-const search = async (keyToSearch, valueToSearch) => {
-  try {
-    const con = await getConnection();
+const search = (keyToSearch, valueToSearch) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = `SELECT * FROM challenge WHERE ${keyToSearch} = ?;`;
-    const searchResult = await con.query(query, [valueToSearch]);
-    return searchResult[0];
-  } catch (err) {
-    console.error(err);
-  }
+      const query = `SELECT * FROM challenge WHERE ${keyToSearch} = ?;`;
+      const searchResult = await con.query(query, [valueToSearch]);
+
+      resolve(searchResult[0]);
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 /**
@@ -106,15 +109,18 @@ const shift = (challengeEntity) => {
  * > Elimina un registro de la DB usando id del registro
  * @param {Number} challengeId
  */
-const removeOne = async (challengeId) => {
-  try {
-    const con = await getConnection();
+const removeOne = (challengeId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = "DELETE FROM `challenge` WHERE `challengeId` = ?;";
-    await con.query(query, [challengeId]);
-  } catch (err) {
-    console.log(err);
-  }
+      const query = "DELETE FROM `challenge` WHERE `challengeId` = ?;";
+      await con.query(query, [challengeId]);
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 module.exports = { store, search, acquire, shift, removeOne };

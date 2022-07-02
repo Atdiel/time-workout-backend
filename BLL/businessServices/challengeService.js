@@ -101,34 +101,35 @@ const editChallenge = (userId, challengeId, challengeData) => {
  * @param {Number} userId
  * @param {Number} challengeId
  */
-const removeChallenge = async (userId, challengeId) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const removeChallenge = (userId, challengeId) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: verificar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. verificar que exista el usuario.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: verificar que exista el challenge.
+      const challengeExists = await challengeModel.findOne({
+        challengeId: challengeId,
+      });
+      if (!challengeExists) {
+        reject(["Challenge Doesn't Exist", null]);
+      }
+
+      //COMMENT: verificar que le pertenezca al usuario.
+      if (challengeExists.userId !== userId) {
+        reject(["This Challenge Ain't Your Own", null]);
+      }
+
+      await challengeModel.eraseById(challengeId);
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-
-    //[x]: 3. verificar que exista el challenge.
-    const challengeExists = await challengeModel.findOne({
-      challengeId: challengeId,
-    });
-    if (!challengeExists) {
-      throw Error("Challenge Doesn't Exist");
-    }
-
-    //[x]: 3.5 verificar que le pertenezca al usuario.
-    if (challengeExists.userId !== userId) {
-      throw Error("This Challenge Ain't Your Own");
-    }
-
-    //[x]: 4. eliminamos el challenge.
-    //? Se podra enviar algun dato ademas del codigo de respuesta al frontend?
-    await challengeModel.eraseById(challengeId);
-  } catch (err) {}
+  });
 };
 
 module.exports = { newChallenge, myChallenges, editChallenge, removeChallenge };
