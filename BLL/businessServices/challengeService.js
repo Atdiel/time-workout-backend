@@ -60,44 +60,39 @@ const myChallenges = (userId) => {
  * @param {Number} userId
  * @param {Number} challengeId
  * @param {JSON} challengeData
- * @returns //* Object: ChallengeDTO
+ * @returns {Promise}
  */
-const editChallenge = async (userId, challengeId, challengeData) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const editChallenge = (userId, challengeId, challengeData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: verificar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. verificar que exista el usuario.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: verificar que exista el challenge.
+      const challengeExists = await challengeModel.findOne({
+        challengeId: challengeId,
+      });
+      if (!challengeExists) {
+        reject(["Challenge Doesn't Exist", null]);
+      }
+
+      //COMMENT: verificar que le pertenezca al usuario.
+      if (challengeExists.userId !== userId) {
+        reject(["This Challenge Ain't Your Own", null]);
+      }
+
+      //COMMENT: actualizamos los datos del challenge usando "challengeid".
+      challengeData = { ...challengeData, challengeId: challengeId };
+      await challengeModel.update(challengeData);
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-
-    //[x]: 3. verificar que exista el challenge.
-    const checkChallengeExist = await challengeModel.findOne({
-      challengeId: challengeId,
-    });
-    if (!checkChallengeExist) {
-      throw Error("Challenge Doesn't Exist");
-    }
-
-    //[x]: 3.5 verificar que le pertenezca al usuario.
-    if (checkChallengeExist.userId !== userId) {
-      throw Error("This Challenge Ain't Your Own");
-    }
-
-    //[x]: 4. actualizamos los datos del challenge usando "challengeid".
-    challengeData = { ...challengeData, challengeId: challengeId };
-    await challengeModel.update(challengeData);
-
-    //[x]: 5. devolvemos el challenge recien actualizado.
-    const challengeCreated = await challengeModel.findOne({
-      challengeId: challengeId,
-    });
-    const data = challengeCreated;
-
-    return data;
-  } catch (err) {}
+  });
 };
 
 /**
@@ -118,15 +113,15 @@ const removeChallenge = async (userId, challengeId) => {
     }
 
     //[x]: 3. verificar que exista el challenge.
-    const checkChallengeExist = await challengeModel.findOne({
+    const challengeExists = await challengeModel.findOne({
       challengeId: challengeId,
     });
-    if (!checkChallengeExist) {
+    if (!challengeExists) {
       throw Error("Challenge Doesn't Exist");
     }
 
     //[x]: 3.5 verificar que le pertenezca al usuario.
-    if (checkChallengeExist.userId !== userId) {
+    if (challengeExists.userId !== userId) {
       throw Error("This Challenge Ain't Your Own");
     }
 

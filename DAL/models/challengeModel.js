@@ -53,35 +53,36 @@ const find = (userId) => {
  * > la columna de la base de datos
  * > e.g. {id: 128937}
  * @param {Object} object
- * @returns {Promise<Array<JSON>>} - ChallengeDTO || undefinied
+ * @returns {Promise<JSON>} - ChallengeDTO || undefinied
  */
 const findOne = (object) => {
   return new Promise(async (resolve, reject) => {
-    const objectKey = Object.keys(object)[0];
-    const objectValue = object[objectKey];
-    const searchResult = await search(objectKey, objectValue);
-    if (searchResult !== undefined) {
-      const challengeDto = toDto(searchResult);
-
-      return resolve(challengeDto);
+    try {
+      const objectKey = Object.keys(object)[0];
+      const objectValue = object[objectKey];
+      const searchResult = await search(objectKey, objectValue);
+      searchResult === undefined
+        ? resolve(searchResult)
+        : resolve(toDto(searchResult));
+    } catch (err) {
+      reject(err);
     }
-    return resolve(searchResult);
   });
 };
 
 /**
  * > Actualiza registro enviando en parametro objeto con id del registro
- * @param {Object} challengeObject
- * @returns //* void
+ * @param {JSON} challengeObject
+ * @returns {Promise}
  */
 const update = (challengeObject) => {
   return new Promise((resolve, reject) => {
     const challengeEntity = toEntity(challengeObject);
     shift(challengeEntity)
-      .then(function () {
+      .then(() => {
         return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });

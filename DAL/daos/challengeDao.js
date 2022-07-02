@@ -70,31 +70,36 @@ const acquire = (userId) => {
  * > Actualiza un registro usando el id del registro, no del usuario claramente
  * @param {Object: Challenge} challengeEntity
  */
-const shift = async (challengeEntity) => {
-  try {
-    const con = await getConnection();
+const shift = (challengeEntity) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const challengeId = challengeEntity.challengeId;
-    const tittle = challengeEntity.tittle;
-    const description = challengeEntity.description;
-    const followers = challengeEntity.followers;
-    const startDate = challengeEntity.startDate;
-    const endDate = challengeEntity.endDate;
-    const days = challengeEntity.days;
+      const challengeId = challengeEntity.challengeId;
+      const tittle = challengeEntity.tittle;
+      const description = challengeEntity.description;
+      const followers = challengeEntity.followers;
+      const startDate = challengeEntity.startDate;
+      const endDate = challengeEntity.endDate;
+      const days = challengeEntity.days;
 
-    const query =
-      "UPDATE `challenge` SET  `tittle` = ?, `description` = ?, `followers` = ?, `startDate` = ?, `endDate` = ?, `days` = ? WHERE `challengeId` = ?;";
+      const query =
+        "UPDATE `challenge` SET  `tittle` = ?, `description` = ?, `followers` = ?, `startDate` = ?, `endDate` = ?, `days` = ? WHERE `challengeId` = ?;";
 
-    await con.query(query, [
-      tittle,
-      description,
-      followers,
-      startDate,
-      endDate,
-      days,
-      challengeId,
-    ]);
-  } catch (err) {}
+      await con.query(query, [
+        tittle,
+        description,
+        followers,
+        startDate,
+        endDate,
+        days,
+        challengeId,
+      ]);
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 /**
