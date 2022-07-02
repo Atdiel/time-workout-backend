@@ -22,7 +22,7 @@ const add = (userObject) => {
 /**
  * Se encarga de la logica de traer un usario de la base de datos
  * @param {Object} object
- * @returns objeto DTO del usuario encontrado
+ * @returns {Promise<Array<JSON>>} - objeto DTO del usuario encontrado
  */
 const findOne = (object) => {
   return new Promise(async (resolve, reject) => {

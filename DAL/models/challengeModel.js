@@ -33,16 +33,16 @@ const add = (challengeObject) => {
 /**
  * > Devuelve todos los resultados por userId
  * @param {Number} userId
- * @returns // * Array
+ * @returns {Promise<Array<JSON>>} - challenge array
  */
 const find = (userId) => {
   return new Promise((resolve, reject) => {
     acquire(userId)
-      .then(function (result) {
+      .then((result) => {
         const challengeArray = toDtoList(result);
         return resolve(challengeArray);
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });
@@ -53,7 +53,7 @@ const find = (userId) => {
  * > la columna de la base de datos
  * > e.g. {id: 128937}
  * @param {Object} object
- * @returns // * Object: ChallengeDTO || undefinied
+ * @returns {Promise<Array<JSON>>} - ChallengeDTO || undefinied
  */
 const findOne = (object) => {
   return new Promise(async (resolve, reject) => {

@@ -32,28 +32,26 @@ const newChallenge = (userId, challengeData) => {
  * > Servicio con reglas de negocio para listar
  * > todos los registros de un usario.
  * @param {Number} userId
- * @returns //* Array: ChallengeDTO
+ * @returns {Promise<Array>} ChallengeDTO
  */
-const myChallenges = async (userId) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const myChallenges = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: buscar en la base de datos usuario por id.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. buscar en la base de datos usuario por id.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: 3. obtener los challenges de la base de datos.
+      const userChallengeList = await challengeModel.find(userId);
+
+      resolve(userChallengeList);
+    } catch (err) {
+      reject(["Error del servidor", err]);
     }
-
-    //[x]: 3. obtener los challenges de la base de datos.
-    //! EL DTO CHALLENGE CONVERTIRA EL RESULTADO DE LA DB A UNA LISTA CON OBJETOS JSON
-    const userChallengeList = await challengeModel.find(userId);
-
-    //[x]: 4. mandar al frontend el resultado.
-    const data = userChallengeList;
-
-    return data;
-  } catch (err) {}
+  });
 };
 
 /**

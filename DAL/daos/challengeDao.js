@@ -52,15 +52,20 @@ const search = async (keyToSearch, valueToSearch) => {
  * @param {id} userId
  * @returns //* Object List || undefined
  */
-const acquire = async (userId) => {
-  try {
-    const con = await getConnection();
+const acquire = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = "SELECT * FROM `challenge` WHERE userId = ?;";
-    const dataCatched = await con.query(query, [userId]);
-    return dataCatched;
-  } catch (err) {}
+      const query = "SELECT * FROM `challenge` WHERE userId = ?;";
+      const dataCatched = await con.query(query, [userId]);
+      resolve(dataCatched);
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
+
 /**
  * > Actualiza un registro usando el id del registro, no del usuario claramente
  * @param {Object: Challenge} challengeEntity
