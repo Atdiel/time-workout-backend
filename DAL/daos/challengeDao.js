@@ -3,26 +3,29 @@ const { getConnection } = require("../config/mysql");
 
 /**
  * > Almacenar en la base de datos una entidad
- * @param {Object: Challenge} challengeEntity
- * @returns //* Object con challengeId
+ * @param {Object} challengeEntity
+ * @returns {Object} - Object con challengeId
  */
 const store = (challengeEntity) => {
   return new Promise(async (resolve, reject) => {
-    const con = await getConnection();
+    try {
+      const con = await getConnection();
+      const userId = challengeEntity.userId;
+      const tittle = challengeEntity.tittle;
+      const description = challengeEntity.description;
+      const followers = challengeEntity.followers;
+      const startDate = challengeEntity.startDate;
+      const endDate = challengeEntity.endDate;
+      const days = challengeEntity.days;
 
-    const userId = challengeEntity.userId;
-    const tittle = challengeEntity.tittle;
-    const description = challengeEntity.description;
-    const followers = challengeEntity.followers;
-    const startDate = challengeEntity.startDate;
-    const endDate = challengeEntity.endDate;
-    const days = challengeEntity.days;
+      const query = `INSERT INTO challenge (userId, tittle, description, followers, startDate, endDate, days, timestamp)
+        VALUES (${userId}, "${tittle}", "${description}", ${followers}, "${startDate}", "${endDate}", '${days}', CURRENT_DATE());`;
 
-    const query = `INSERT INTO challenge (userId, tittle, description, followers, startDate, endDate, days, timestamp)
-      VALUES (${userId}, "${tittle}", "${description}", ${followers}, "${startDate}", "${endDate}", '${days}', CURRENT_DATE());`;
-
-    const resultDB = await con.query(query);
-    resolve(resultDB);
+      await con.query(query);
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
   });
 };
 

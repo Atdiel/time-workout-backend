@@ -7,29 +7,25 @@ const { userModel, challengeModel } = require("../../DAL/models");
  * @param {JSON} challengeData
  * @returns //* Object: ChallengeDTO
  */
-const newChallenge = async (userId, challengeData) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const newChallenge = (userId, challengeData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: buscar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exists", null]);
+      }
 
-    //[x]: 2. buscar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: creamos registro del challenge.
+      challengeData = { ...challengeData, userId: userId };
+      await challengeModel.add(challengeData);
+
+      resolve();
+    } catch (err) {
+      reject(["Error del servidor", err]);
     }
-
-    //[x]: 3. creamos registro del challenge con el "userId" previamente obtenido.
-    challengeData = { ...challengeData, userId: userId };
-    const challengeIdCreated = await challengeModel.add(challengeData);
-
-    //[x]: 4. respondemos con el challenge recien creado.
-    //! IMPORTANTE MANDAR EL OBJETO JSON PARA QUE EL FRONTEND TENGA CONOCIMIENTO DEL ID DE CHALLENGE
-    const challengeCreated = await challengeModel.findOne({
-      challengeId: challengeIdCreated,
-    });
-    const data = { ...challengeCreated };
-    return data;
-  } catch (err) {}
+  });
 };
 
 /**
@@ -44,8 +40,8 @@ const myChallenges = async (userId) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. buscar en la base de datos usuario por id.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
 
@@ -74,8 +70,8 @@ const editChallenge = async (userId, challengeId, challengeData) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. verificar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
 
@@ -118,8 +114,8 @@ const removeChallenge = async (userId, challengeId) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. verificar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
 

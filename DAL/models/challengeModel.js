@@ -21,11 +21,10 @@ const add = (challengeObject) => {
   return new Promise((resolve, reject) => {
     const challengeEntity = toEntity(challengeObject);
     store(challengeEntity)
-      .then(function (result) {
-        const challengeIdCreated = result.insertId;
-        return resolve(challengeIdCreated);
+      .then(() => {
+        return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });
