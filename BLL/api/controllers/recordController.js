@@ -10,12 +10,18 @@ const createRecord = async (req, res) => {
   try {
     //* primero guardamos el id antes matchear la request
     const userId = req.user.id;
+
     //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const recordData = matchedData(req);
-    //FIXME no debe regresar ningun dato, solo quiero saber que se resolvio correctamente
-    const data = await recordService.newRecord(userId, recordData);
+
+    await recordService.newRecord(userId, recordData);
+
     res.send({ success: true });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+  }
 };
 
 /**

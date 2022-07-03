@@ -9,18 +9,17 @@ const { toEntity, toDto, toDtoList } = require("../converters/recordConverter");
 
 /**
  * > almacena entidad usando objeto con userId
- * @param {Object} recordObject
- * @returns // * recordId
+ * @param {JSON} recordObject
+ * @returns {Promise}
  */
 const add = (recordObject) => {
   return new Promise((resolve, reject) => {
     const recordEntity = toEntity(recordObject);
     store(recordEntity)
-      .then(function (result) {
-        const recordIdCreated = result.insertId;
-        return resolve(recordIdCreated);
+      .then(() => {
+        return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });

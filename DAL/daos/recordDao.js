@@ -1,24 +1,30 @@
 // const con = require("../config/mysql");
 const { getConnection } = require("../config/mysql");
+
 /**
  * > Almacenar en la base de datos una entidad
- * @param {Object: Record} recordEntity
- * @returns //* Object con recordId
+ * @param {JSON} recordEntity
+ * @returns {Promise}
  */
 const store = (recordEntity) => {
   return new Promise(async (resolve, reject) => {
-    const con = await getConnection();
+    try {
+      const con = await getConnection();
 
-    const userId = recordEntity.userId;
-    const tittle = recordEntity.tittle;
-    const description = recordEntity.description;
-    const recordTable = recordEntity.recordTable;
+      const userId = recordEntity.userId;
+      const tittle = recordEntity.tittle;
+      const description = recordEntity.description;
+      const recordTable = recordEntity.recordTable;
 
-    const query = `INSERT INTO record (userId, tittle, description, recordTable, timestamp) 
-        VALUES (${userId}, "${tittle}", "${description}", '${recordTable}', CURRENT_DATE());`;
+      const query = `INSERT INTO record (userId, tittle, description, recordTable, timestamp) 
+          VALUES (${userId}, "${tittle}", "${description}", '${recordTable}', CURRENT_DATE());`;
 
-    const resultDB = await con.query(query);
-    resolve(resultDB);
+      await con.query(query);
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
   });
 };
 

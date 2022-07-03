@@ -2,33 +2,29 @@ const { recordModel, userModel } = require("../../DAL/models");
 
 /**
  * > Servicio que define reglas de negocio al crear un nuevo registro
- * @param {Number} userId
+ * @param {int} userId
  * @param {JSON} recordData
- * @returns //* Object: RecordDTO
+ * @returns {Promise}
  */
-const newRecord = async (userId, recordData) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const newRecord = (userId, recordData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: buscar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. buscar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: creamos registro del record con el "userId" previamente obtenido.
+      recordData = { ...recordData, userId: userId };
+      await recordModel.add(recordData);
+
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-
-    //[x]: 3. creamos registro del record con el "userId" previamente obtenido.
-    recordData = { ...recordData, userId: userId };
-    const recordIdCreated = await recordModel.add(recordData);
-
-    //[x]: 4. respondemos con el record recien creado.
-    //! IMPORTANTE MANDAR EL OBJETO JSON PARA QUE EL FRONTEND TENGA CONOCIMIENTO DEL ID DE RECORD
-    const recordCreated = await recordModel.findOne({
-      recordId: recordIdCreated,
-    });
-    const data = { ...recordCreated };
-    return data;
-  } catch (err) {}
+  });
 };
 
 /**
@@ -43,8 +39,8 @@ const myRecords = async (userId) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. buscar en la base de datos usuario por id.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
 
@@ -72,8 +68,8 @@ const editRecord = async (userId, recordId, recordData) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. verificar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
 
@@ -110,8 +106,8 @@ const removeRecord = async (userId, recordId) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. verificar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
 
