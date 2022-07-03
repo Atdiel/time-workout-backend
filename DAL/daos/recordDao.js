@@ -32,18 +32,21 @@ const store = (recordEntity) => {
  * > Busca en la BD mediante llave-valor e.g. id: 153
  * @param {String} keyToSearch
  * @param {String || Number} valueToSearch
- * @returns //* Object de registro encontrado (solo uno) || undefined
+ * @returns {Promise<JSON>} registro encontrado || undefined
  */
-const search = async (keyToSearch, valueToSearch) => {
-  try {
-    const con = await getConnection();
+const search = (keyToSearch, valueToSearch) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = `SELECT * FROM record WHERE ${keyToSearch} = ?;`;
-    const searchResult = await con.query(query, [valueToSearch]);
-    return searchResult[0];
-  } catch (err) {
-    console.error(err);
-  }
+      const query = `SELECT * FROM record WHERE ${keyToSearch} = ?;`;
+      const searchResult = await con.query(query, [valueToSearch]);
+
+      resolve(searchResult[0]);
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 /**
@@ -68,25 +71,28 @@ const acquire = (userId) => {
 
 /**
  * > Actualiza un registro usando el id del registro, no del usuario claramente
- * @param {Object: Record} recordEntity
- * @returns //* void
+ * @param {JSON} recordEntity
+ * @returns {Promise}
  */
-const shift = async (recordEntity) => {
-  try {
-    const con = await getConnection();
+const shift = (recordEntity) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const recordId = recordEntity.recordId;
-    const tittle = recordEntity.tittle;
-    const description = recordEntity.description;
-    const recordTable = recordEntity.recordTable;
+      const recordId = recordEntity.recordId;
+      const tittle = recordEntity.tittle;
+      const description = recordEntity.description;
+      const recordTable = recordEntity.recordTable;
 
-    const query =
-      "UPDATE `record` SET  `tittle` = ?, `description` = ?, `recordTable` = ? WHERE `recordId` = ?;";
+      const query =
+        "UPDATE `record` SET  `tittle` = ?, `description` = ?, `recordTable` = ? WHERE `recordId` = ?;";
 
-    await con.query(query, [tittle, description, recordTable, recordId]);
-  } catch (err) {
-    console.log(err);
-  }
+      await con.query(query, [tittle, description, recordTable, recordId]);
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 /**

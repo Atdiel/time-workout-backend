@@ -51,13 +51,19 @@ const updateRecord = async (req, res) => {
   try {
     //* primero guardamos el id antes matchear la request
     const userId = req.user.id;
+
     //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const recordId = matchedData(req).recordid;
     const recordData = matchedData(req);
-    //FIXME no debe devolver ningun dato, solo quiero saber que funciono
-    const data = await recordService.editRecord(userId, recordId, recordData);
+
+    await recordService.editRecord(userId, recordId, recordData);
+
     res.send({ success: true });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+  }
 };
 
 /**

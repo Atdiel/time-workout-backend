@@ -47,36 +47,37 @@ const find = (userId) => {
  * > La llave del objeto debe tener el mismo nombre que
  * > la columna de la base de datos
  * > e.g. {id: 128937}
- * @param {Object} object
- * @returns // * Object class RecordDTO || undefinied
+ * @param {JSON} object
+ * @returns {Promise<JSON>} RecordDTO || undefinied
  */
 const findOne = (object) => {
   return new Promise(async (resolve, reject) => {
-    const objectKey = Object.keys(object)[0];
-    const objectValue = object[objectKey];
-    const searchResult = await search(objectKey, objectValue);
-    if (searchResult !== undefined) {
-      const recordDto = toDto(searchResult);
-
-      return resolve(recordDto);
+    try {
+      const objectKey = Object.keys(object)[0];
+      const objectValue = object[objectKey];
+      const searchResult = await search(objectKey, objectValue);
+      searchResult === undefined
+        ? resolve(searchResult)
+        : resolve(toDto(searchResult));
+    } catch (err) {
+      reject(err);
     }
-    return resolve(searchResult);
   });
 };
 
 /**
  * > Actualiza registro enviando en parametro objeto con id del registro
  * @param {Object} recordObject
- * @returns //* void
+ * @returns {Promise}
  */
 const update = (recordObject) => {
   return new Promise((resolve, reject) => {
     const recordEntity = toEntity(recordObject);
     shift(recordEntity)
-      .then(function () {
+      .then(() => {
         return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });

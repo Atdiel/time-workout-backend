@@ -56,41 +56,43 @@ const myRecords = (userId) => {
 /**
  * > Servicio con reglas de negocio para editar un
  * > registro de la tabla record
- * @param {Number} userId
- * @param {Number} recordId
+ * @param {int} userId
+ * @param {int} recordId
  * @param {JSON} recordData
- * @returns //* Object: RecordDTO
+ * @returns {Promise} void
  */
-const editRecord = async (userId, recordId, recordData) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const editRecord = (userId, recordId, recordData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: verificar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. verificar que exista el usuario.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: verificar que exista el record.
+      const recordExists = await recordModel.findOne({
+        recordId: recordId,
+      });
+      if (!recordExists) {
+        reject(["Record Doesn't Exist", null]);
+      }
+
+      //COMMENT: verficar que el record pertenezca al usuario.
+      if (recordExists.userId !== userId) {
+        reject(["This Record Ain't Your Own", null]);
+      }
+
+      //COMMENT: actualizamos los datos del record usando "recordid".
+      recordData = { ...recordData, recordId: recordId };
+      await recordModel.update(recordData);
+
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-
-    //[x]: 3. verificar que exista el record.
-    const checkRecordExist = await recordModel.findOne({ recordId: recordId });
-    if (!checkRecordExist) {
-      throw Error("Record Doesn't Exist");
-    }
-    //[x]: 3.5 verficar que el record pertenezca al usuario.
-    if (checkRecordExist.userId !== userId) {
-      throw Error("This Record Ain't Your Own");
-    }
-
-    //[x]: 4. actualizamos los datos del record usando "recordid".
-    recordData = { ...recordData, recordId: recordId };
-    await recordModel.update(recordData);
-
-    //[x]: 5. devolvemos el record recien actualizado.
-    const recordCreated = await recordModel.findOne({ recordId: recordId });
-    const data = recordCreated;
-    return data;
-  } catch (err) {}
+  });
 };
 
 /**
@@ -111,14 +113,14 @@ const removeRecord = async (userId, recordId) => {
     }
 
     //[x]: 3. verificar que exista el record.
-    const checkRecordExist = await recordModel.findOne({
+    const recordExists = await recordModel.findOne({
       recordId: recordId,
     });
-    if (!checkRecordExist) {
+    if (!recordExists) {
       throw Error("Routine Doesn't Exist");
     }
     //[x]: 3.5 verificar que el record sea propio del usuario
-    if (checkRecordExist.userId !== userId) {
+    if (recordExists.userId !== userId) {
       throw Error("This Record Ain't Your own");
     }
 
