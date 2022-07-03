@@ -4,7 +4,7 @@ const { recordModel, userModel } = require("../../DAL/models");
  * > Servicio que define reglas de negocio al crear un nuevo registro
  * @param {int} userId
  * @param {JSON} recordData
- * @returns {Promise}
+ * @returns {Promise} void
  */
 const newRecord = (userId, recordData) => {
   return new Promise(async (resolve, reject) => {
@@ -31,7 +31,7 @@ const newRecord = (userId, recordData) => {
  * > Servicio con reglas de negocio para listar todos
  * > los registros del usuario de la tabla record
  * @param {int} userId
- * @returns {Promise<Array<JSON>>} - RecordDTO
+ * @returns {Promise<Array<JSON>>} RecordDTO
  */
 const myRecords = (userId) => {
   return new Promise(async (resolve, reject) => {
@@ -98,36 +98,40 @@ const editRecord = (userId, recordId, recordData) => {
 /**
  * > Servicio con reglas de negocio para eliminar
  * > un registro de un usuario en la tabla record
- * @param {Number} userId
- * @param {Number} recordId
+ * @param {int} userId
+ * @param {int} recordId
  */
-const removeRecord = async (userId, recordId) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const removeRecord = (userId, recordId) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: verificar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. verificar que exista el usuario.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
-    }
+      //COMMENT: verificar que exista el record.
+      const recordExists = await recordModel.findOne({
+        recordId: recordId,
+      });
+      if (!recordExists) {
+        reject(["Routine Doesn't Exist", null]);
+      }
 
-    //[x]: 3. verificar que exista el record.
-    const recordExists = await recordModel.findOne({
-      recordId: recordId,
-    });
-    if (!recordExists) {
-      throw Error("Routine Doesn't Exist");
-    }
-    //[x]: 3.5 verificar que el record sea propio del usuario
-    if (recordExists.userId !== userId) {
-      throw Error("This Record Ain't Your own");
-    }
+      //COMMENT: verificar que el record sea propio del usuario
+      if (recordExists.userId !== userId) {
+        reject(["This Record Ain't Your own", null]);
+      }
 
-    //[x]: 4. eliminamos el record.
-    //? Se podra enviar algun dato ademas del codigo de respuesta al frontend?
-    await recordModel.eraseById(recordId);
-  } catch (err) {}
+      //COMMENT: eliminamos el record.
+      await recordModel.eraseById(recordId);
+
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
+    }
+  });
 };
 
 module.exports = { newRecord, myRecords, editRecord, editRecord, removeRecord };

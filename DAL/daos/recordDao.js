@@ -31,7 +31,7 @@ const store = (recordEntity) => {
 /**
  * > Busca en la BD mediante llave-valor e.g. id: 153
  * @param {String} keyToSearch
- * @param {String || Number} valueToSearch
+ * @param {String || int} valueToSearch
  * @returns {Promise<JSON>} registro encontrado || undefined
  */
 const search = (keyToSearch, valueToSearch) => {
@@ -51,7 +51,7 @@ const search = (keyToSearch, valueToSearch) => {
 
 /**
  * > Busca todas las coincidencias usando el id de usuario
- * @param {id} userId
+ * @param {int} userId
  * @returns {Promise<Array<JSON>>} - Object List || undefined
  */
 const acquire = (userId) => {
@@ -72,7 +72,7 @@ const acquire = (userId) => {
 /**
  * > Actualiza un registro usando el id del registro, no del usuario claramente
  * @param {JSON} recordEntity
- * @returns {Promise}
+ * @returns {Promise} void
  */
 const shift = (recordEntity) => {
   return new Promise(async (resolve, reject) => {
@@ -97,17 +97,22 @@ const shift = (recordEntity) => {
 
 /**
  * > Elimina un registro de la DB usando id del registro
- * @param {id} recordId
+ * @param {int} recordId
+ * @returns {Promise} void
  */
-const removeOne = async (recordId) => {
-  try {
-    const con = await getConnection();
+const removeOne = (recordId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = "DELETE FROM `record` WHERE `recordId` = ?;";
-    await con.query(query, [recordId]);
-  } catch (err) {
-    console.log(err);
-  }
+      const query = "DELETE FROM `record` WHERE `recordId` = ?;";
+      await con.query(query, [recordId]);
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 module.exports = { store, search, acquire, shift, removeOne };

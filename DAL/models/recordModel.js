@@ -10,7 +10,7 @@ const { toEntity, toDto, toDtoList } = require("../converters/recordConverter");
 /**
  * > almacena entidad usando objeto con userId
  * @param {JSON} recordObject
- * @returns {Promise}
+ * @returns {Promise} void
  */
 const add = (recordObject) => {
   return new Promise((resolve, reject) => {
@@ -27,8 +27,8 @@ const add = (recordObject) => {
 
 /**
  * > Devuelve todos los resultados por userId
- * @param {Id: Number} userId
- * @returns {Promise<Array<JSON>>}
+ * @param {int} userId
+ * @returns {Promise<Array<JSON>>} Record list
  */
 const find = (userId) => {
   return new Promise((resolve, reject) => {
@@ -68,7 +68,7 @@ const findOne = (object) => {
 /**
  * > Actualiza registro enviando en parametro objeto con id del registro
  * @param {Object} recordObject
- * @returns {Promise}
+ * @returns {Promise} void
  */
 const update = (recordObject) => {
   return new Promise((resolve, reject) => {
@@ -85,16 +85,16 @@ const update = (recordObject) => {
 
 /**
  * > Elimina registro solo con su id
- * @param {Id: Number} recordId
- * @returns //* void
+ * @param {int} recordId
+ * @returns {Promise} void
  */
 const eraseById = (recordId) => {
   return new Promise((resolve, reject) => {
     removeOne(recordId)
-      .then(function () {
+      .then(() => {
         return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });
