@@ -28,16 +28,16 @@ const add = (recordObject) => {
 /**
  * > Devuelve todos los resultados por userId
  * @param {Id: Number} userId
- * @returns // * Array
+ * @returns {Promise<Array<JSON>>}
  */
 const find = (userId) => {
   return new Promise((resolve, reject) => {
     acquire(userId)
-      .then(function (result) {
+      .then((result) => {
         const recordArray = toDtoList(result);
         return resolve(recordArray);
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });

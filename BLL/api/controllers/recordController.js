@@ -33,8 +33,13 @@ const readRecord = async (req, res) => {
   try {
     const userId = req.user.id;
     const data = await recordService.myRecords(userId);
+
     res.send({ success: true, data });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+  }
 };
 
 /**

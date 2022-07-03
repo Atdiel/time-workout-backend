@@ -30,28 +30,27 @@ const newRecord = (userId, recordData) => {
 /**
  * > Servicio con reglas de negocio para listar todos
  * > los registros del usuario de la tabla record
- * @param {Number} userId
- * @returns //* Array: RecordDTO
+ * @param {int} userId
+ * @returns {Promise<Array<JSON>>} - RecordDTO
  */
-const myRecords = async (userId) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const myRecords = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: buscar en la base de datos usuario por id.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. buscar en la base de datos usuario por id.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: obtener los records de la base de datos.
+      const userRecordList = await recordModel.find(userId);
+
+      resolve(userRecordList);
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-
-    //[x]: 3. obtener los records de la base de datos.
-    //! EL DTO RECORD CONVERTIRA EL RESULTADO DE LA DB A UNA LISTA CON OBJETOS JSON
-    const userRecordList = await recordModel.find(userId);
-
-    //[x]: 4. mandar al frontend el resultado.
-    const data = userRecordList;
-    return data;
-  } catch (err) {}
+  });
 };
 
 /**
