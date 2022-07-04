@@ -37,11 +37,11 @@ const add = (routineObject) => {
 const find = (userId) => {
   return new Promise((resolve, reject) => {
     acquire(userId)
-      .then(function (result) {
+      .then((result) => {
         const routineArray = toDtoList(result);
         return resolve(routineArray);
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });

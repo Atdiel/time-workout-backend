@@ -49,18 +49,23 @@ const search = async (keyToSearch, valueToSearch) => {
 
 /**
  * > Busca todas las coincidencias usando el id de usuario
- * @param {id} userId
- * @returns //* Object List || undefined
+ * @param {int} userId
+ * @returns {Promise<Array<JSON>>} Object List || undefined
  */
-const acquire = async (userId) => {
-  try {
-    const con = await getConnection();
+const acquire = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = "SELECT * FROM `routine` WHERE userId = ?;";
-    const dataCatched = await con.query(query, [userId]);
-    return dataCatched;
-  } catch (err) {}
+      const query = "SELECT * FROM `routine` WHERE userId = ?;";
+      const dataCatched = await con.query(query, [userId]);
+      resolve(dataCatched);
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
+
 /**
  * > Actualiza un registro usando el id del registro, no del usuario claramente
  * @param {Object: Routine} routineEntity

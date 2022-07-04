@@ -48,14 +48,13 @@ const myRoutines = (userId) => {
         reject(["User Doesn't Exist", null]);
       }
 
-      //[x]: 3. obtener las rutinas de la base de datos.
-      //! EL DTO ROUTINE CONVERTIRA EL RESULTADO DE LA DB A UNA LISTA CON OBJETOS JSON
+      //COMMENT: obtener las rutinas de la base de datos.
       const userRoutineList = await routineModel.find(userId);
 
-      //[x]: 4. mandar al frontend el resultado.
-      const data = userRoutineList;
-      return data;
-    } catch (err) {}
+      resolve(userRoutineList);
+    } catch (err) {
+      reject(["Error del Servidor", err]);
+    }
   });
 };
 

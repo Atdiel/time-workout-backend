@@ -32,6 +32,7 @@ const createRoutine = async (req, res) => {
 const readRoutine = async (req, res) => {
   try {
     const userId = req.user.id;
+
     const data = await routineService.myRoutines(userId);
 
     res.send({ success: true, data });
