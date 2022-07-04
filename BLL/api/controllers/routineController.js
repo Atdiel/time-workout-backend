@@ -10,12 +10,18 @@ const createRoutine = async (req, res) => {
   try {
     //* primero guardamos el id antes matchear la request
     const userId = req.user.id;
+
     //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const routineData = matchedData(req);
-    //FIXME el servicio no debe responder nada
-    const data = await routineService.newRoutine(userId, routineData);
+
+    await routineService.newRoutine(userId, routineData);
+
     res.send({ success: true });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+  }
 };
 
 /**
@@ -27,8 +33,13 @@ const readRoutine = async (req, res) => {
   try {
     const userId = req.user.id;
     const data = await routineService.myRoutines(userId);
+
     res.send({ success: true, data });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+  }
 };
 
 /**

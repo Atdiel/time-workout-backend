@@ -13,18 +13,17 @@ const {
 
 /**
  * > almacena entidad usando objeto con userId
- * @param {Object} routineObject
- * @returns // * routineId
+ * @param {JSON} routineObject
+ * @returns {Promise} void
  */
 const add = (routineObject) => {
   return new Promise((resolve, reject) => {
     const routineEntity = toEntity(routineObject);
     store(routineEntity)
-      .then(function (result) {
-        const routineIdCreated = result.insertId;
-        return resolve(routineIdCreated);
+      .then(() => {
+        return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });
@@ -32,8 +31,8 @@ const add = (routineObject) => {
 
 /**
  * > Devuelve todos los resultados por userId
- * @param {Id: Number} userId
- * @returns // * Array
+ * @param {int} userId
+ * @returns {Promise<Array<JSON>>} routineDTO list
  */
 const find = (userId) => {
   return new Promise((resolve, reject) => {

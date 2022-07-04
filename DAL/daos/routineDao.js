@@ -3,24 +3,29 @@ const { getConnection } = require("../config/mysql");
 
 /**
  * > Almacenar en la base de datos una entidad
- * @param {Object: Routine} routineEntity
- * @returns //* Object con routineId
+ * @param {JSON} routineEntity
+ * @returns {Promise} void
  */
 const store = (routineEntity) => {
   return new Promise(async (resolve, reject) => {
-    const con = await getConnection();
+    try {
+      const con = await getConnection();
 
-    const userId = routineEntity.userId;
-    const tittle = routineEntity.tittle;
-    const privacy = routineEntity.privacy;
-    const description = routineEntity.description;
-    const exercisesInfo = routineEntity.exercisesInfo;
+      const userId = routineEntity.userId;
+      const tittle = routineEntity.tittle;
+      const privacy = routineEntity.privacy;
+      const description = routineEntity.description;
+      const exercisesInfo = routineEntity.exercisesInfo;
 
-    const query = `INSERT INTO routine (userId, tittle, privacy, description, exercisesInfo, timestamp) 
-      VALUES (${userId}, "${tittle}", ${privacy}, "${description}", '${exercisesInfo}', CURRENT_DATE());`;
+      const query = `INSERT INTO routine (userId, tittle, privacy, description, exercisesInfo, timestamp) 
+        VALUES (${userId}, "${tittle}", ${privacy}, "${description}", '${exercisesInfo}', CURRENT_DATE());`;
 
-    const resultDB = await con.query(query);
-    resolve(resultDB);
+      await con.query(query);
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
   });
 };
 

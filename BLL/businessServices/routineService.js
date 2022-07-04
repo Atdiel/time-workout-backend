@@ -7,60 +7,56 @@ const {
 /**
  * > Servicio con reglas de negocio para crear
  * > un registro en la base de datos
- * @param {Number} userId
+ * @param {int} userId
  * @param {JSON} routineData
- * @returns //* Object: RoutineDTO
+ * @returns {Promise} void
  */
-const newRoutine = async (userId, routineData) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const newRoutine = (userId, routineData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: buscar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. buscar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: creamos registro de la routine con el "userId".
+      routineData = { ...routineData, userId: userId };
+      await routineModel.add(routineData);
+
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-
-    //[x]: 3. creamos registro de la routine con el "userId" previamente obtenido.
-    routineData = { ...routineData, userId: userId };
-    const routineIdCreated = await routineModel.add(routineData);
-
-    //[x]: 4. respondemos con la routine recien creada.
-    //! IMPORTANTE MANDAR EL OBJETO JSON PARA QUE EL FRONTEND TENGA CONOCIMIENTO DEL ID DE RUTINA
-    const routineCreated = await routineModel.findOne({
-      routineId: routineIdCreated,
-    });
-    const data = { ...routineCreated };
-    return data;
-  } catch (err) {}
+  });
 };
 
 /**
  * > Servicio con reglas de negocio para listar
  * > todos los registros de un usario.
- * @param {Number} userId
- * @returns //* Array: RoutineDTO
+ * @param {int} userId
+ * @returns {Promise<Array<JSON>>} RoutineDTO
  */
-const myRoutines = async (userId) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const myRoutines = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: buscar en la base de datos usuario por id.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. buscar en la base de datos usuario por id.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
-      throw Error("User Doesn't Exist");
-    }
+      //[x]: 3. obtener las rutinas de la base de datos.
+      //! EL DTO ROUTINE CONVERTIRA EL RESULTADO DE LA DB A UNA LISTA CON OBJETOS JSON
+      const userRoutineList = await routineModel.find(userId);
 
-    //[x]: 3. obtener las rutinas de la base de datos.
-    //! EL DTO ROUTINE CONVERTIRA EL RESULTADO DE LA DB A UNA LISTA CON OBJETOS JSON
-    const userRoutineList = await routineModel.find(userId);
-
-    //[x]: 4. mandar al frontend el resultado.
-    const data = userRoutineList;
-    return data;
-  } catch (err) {}
+      //[x]: 4. mandar al frontend el resultado.
+      const data = userRoutineList;
+      return data;
+    } catch (err) {}
+  });
 };
 
 /**
@@ -77,8 +73,8 @@ const editRoutine = async (userId, routineId, routineData) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. verificar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
 
@@ -122,8 +118,8 @@ const removeRoutine = async (userId, routineId) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. verificar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
 
