@@ -62,6 +62,7 @@ const acquire = (userId) => {
 
       const query = "SELECT * FROM `routine` WHERE userId = ?;";
       const dataCatched = await con.query(query, [userId]);
+
       resolve(dataCatched);
     } catch (err) {
       reject(err);
@@ -105,17 +106,22 @@ const shift = (routineEntity) => {
 
 /**
  * > Elimina un registro de la DB usando id del registro
- * @param {id} routineId
+ * @param {int} routineId
+ * @returns {Promise} void
  */
-const removeOne = async (routineId) => {
-  try {
-    const con = await getConnection();
+const removeOne = (routineId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = "DELETE FROM `routine` WHERE `routineId` = ?;";
-    await con.query(query, [routineId]);
-  } catch (err) {
-    console.log(err);
-  }
+      const query = "DELETE FROM `routine` WHERE `routineId` = ?;";
+      await con.query(query, [routineId]);
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 module.exports = { store, search, acquire, shift, removeOne };

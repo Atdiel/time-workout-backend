@@ -75,12 +75,18 @@ const updateRoutine = async (req, res) => {
 const deleteRoutine = async (req, res) => {
   try {
     const userId = req.user.id;
+
     //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const routineId = matchedData(req).routineid;
 
     await routineService.removeRoutine(userId, routineId);
+
     res.send({ success: true });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+  }
 };
 
 module.exports = { createRoutine, readRoutine, updateRoutine, deleteRoutine };

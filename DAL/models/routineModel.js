@@ -89,16 +89,16 @@ const update = (routineObject) => {
 
 /**
  * > Elimina registro solo con su id
- * @param {Id: Number} routineId
- * @returns //* void
+ * @param {int} routineId
+ * @returns {Promise} void
  */
 const eraseById = (routineId) => {
   return new Promise((resolve, reject) => {
     removeOne(routineId)
-      .then(function () {
+      .then(() => {
         return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });

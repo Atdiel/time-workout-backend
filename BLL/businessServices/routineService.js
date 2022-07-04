@@ -108,36 +108,41 @@ const editRoutine = (userId, routineId, routineData) => {
 /**
  * > Servicio con reglas de negocio para eliminar
  * > un registro de un usuario en la base de datos
- * @param {Number} userId
- * @param {Number} routineId
+ * @param {int} userId
+ * @param {int} routineId
+ * @returns {Promise} void
  */
-const removeRoutine = async (userId, routineId) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const removeRoutine = (userId, routineId) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: verificar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. verificar que exista el usuario.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
-    }
+      //COMMENT: verificar que exista la rutina.
+      const routineExists = await routineModel.findOne({
+        routineId: routineId,
+      });
+      if (!routineExists) {
+        reject(["Routine Doesn't Exist", null]);
+      }
 
-    //[x]: 3. verificar que exista la rutina.
-    const routineExists = await routineModel.findOne({
-      routineId: routineId,
-    });
-    if (!routineExists) {
-      throw Error("Routine Doesn't Exist");
-    }
-    //[x]: 3.5 verificar que la rutina sea propia del usuario.
-    if (routineExists.userId !== userId) {
-      throw Error("This Routine Ain't Your Own");
-    }
+      //COMMENT: verificar que la rutina sea propia del usuario.
+      if (routineExists.userId !== userId) {
+        reject(["This Routine Ain't Your Own", null]);
+      }
 
-    //[x]: 4. eliminamos la rutina.
-    //? Se podra enviar algun dato ademas del codigo de respuesta al frontend?
-    await routineModel.eraseById(routineId);
-  } catch (err) {}
+      //COMMENT: eliminamos la rutina.
+      await routineModel.eraseById(routineId);
+
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
+    }
+  });
 };
 
 module.exports = { newRoutine, myRoutines, editRoutine, removeRoutine };
