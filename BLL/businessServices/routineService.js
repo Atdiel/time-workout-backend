@@ -61,48 +61,48 @@ const myRoutines = (userId) => {
 /**
  * > Servicio con reglas de negocio para editar
  * > un registro de un usuario en la base de datos
- * @param {Number} userId
- * @param {Number} routineId
+ * @param {int} userId
+ * @param {int} routineId
  * @param {JSON} routineData
- * @returns //* Object: RoutineDTO
+ * @returns {Promise} void
  */
-const editRoutine = async (userId, routineId, routineData) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+const editRoutine = (userId, routineId, routineData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: verificar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. verificar que exista el usuario.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: verificar que exista la rutina.
+      const routineExists = await routineModel.findOne({
+        routineId: routineId,
+      });
+      if (!routineExists) {
+        reject(["Routine Doesn't Exist", null]);
+      }
+
+      //COMMENT: verificar que la routine sea propia del usuario.
+      if (routineExists.userId !== userId) {
+        reject(["This Routine Ain't Your Own", null]);
+      }
+
+      //COMMENT: actualizamos los datos de la tabata usando "routineid".
+      routineData = { ...routineData, routineId: routineId };
+      await routineModel.update(routineData);
+
+      //COMMENT: si es privado, borrar el registro en la tabla @favoriteWorkout
+      if (routineData.privacy === true) {
+        await favoriteWorkoutModel.erase({ routineId: routineId });
+      }
+
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-
-    //[x]: 3. verificar que exista la rutina.
-    const checkRoutineExist = await routineModel.findOne({
-      routineId: routineId,
-    });
-    if (!checkRoutineExist) {
-      throw Error("Routine Doesn't Exist");
-    }
-    //[x]: 3.5 verificar que la routine sea propia del usuario.
-    if (checkRoutineExist.userId !== userId) {
-      throw Error("This Routine Ain't Your Own");
-    }
-
-    //[x]:  4. actualizamos los datos de la tabata usando "routineid".
-    routineData = { ...routineData, routineId: routineId };
-    await routineModel.update(routineData);
-
-    //[x]: 5. si el campo de "privacy" es privado, borrar en registros de la tabla @favoriteWorkout donde el "routineId" sea la actualizada
-    if (routineData.privacy === true) {
-      await favoriteWorkoutModel.erase({ routineId: routineId });
-    }
-
-    //[x]: 6. devolvemos la rutina recien actualizada.
-    const routineCreated = await routineModel.findOne({ routineId: routineId });
-    const data = routineCreated;
-    return data;
-  } catch (err) {}
+  });
 };
 
 /**
@@ -123,14 +123,14 @@ const removeRoutine = async (userId, routineId) => {
     }
 
     //[x]: 3. verificar que exista la rutina.
-    const checkRoutineExist = await routineModel.findOne({
+    const routineExists = await routineModel.findOne({
       routineId: routineId,
     });
-    if (!checkRoutineExist) {
+    if (!routineExists) {
       throw Error("Routine Doesn't Exist");
     }
     //[x]: 3.5 verificar que la rutina sea propia del usuario.
-    if (checkRoutineExist.userId !== userId) {
+    if (routineExists.userId !== userId) {
       throw Error("This Routine Ain't Your Own");
     }
 

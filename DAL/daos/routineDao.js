@@ -33,18 +33,21 @@ const store = (routineEntity) => {
  * > Busca en la BD mediante llave-valor e.g. id: 153
  * @param {String} keyToSearch
  * @param {String || Number} valueToSearch
- * @returns //* Object de registro encontrado || undefined
+ * @returns {Promise<JSON>} routineEntity || undefined
  */
-const search = async (keyToSearch, valueToSearch) => {
-  try {
-    const con = await getConnection();
+const search = (keyToSearch, valueToSearch) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = `SELECT * FROM routine WHERE ${keyToSearch} = ?;`;
-    const searchResult = await con.query(query, [valueToSearch]);
-    return searchResult[0];
-  } catch (err) {
-    console.error(err);
-  }
+      const query = `SELECT * FROM routine WHERE ${keyToSearch} = ?;`;
+      const searchResult = await con.query(query, [valueToSearch]);
+
+      resolve(searchResult[0]);
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 /**
@@ -68,29 +71,36 @@ const acquire = (userId) => {
 
 /**
  * > Actualiza un registro usando el id del registro, no del usuario claramente
- * @param {Object: Routine} routineEntity
+ * @param {JSON} routineEntity
+ * @returns {Promise} void
  */
-const shift = async (routineEntity) => {
-  try {
-    const con = await getConnection();
+const shift = (routineEntity) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const routineId = routineEntity.routineId;
-    const tittle = routineEntity.tittle;
-    const privacy = routineEntity.privacy;
-    const description = routineEntity.description;
-    const exercisesInfo = routineEntity.exercisesInfo;
+      const routineId = routineEntity.routineId;
+      const tittle = routineEntity.tittle;
+      const privacy = routineEntity.privacy;
+      const description = routineEntity.description;
+      const exercisesInfo = routineEntity.exercisesInfo;
 
-    const query =
-      "UPDATE `routine` SET  `tittle` = ?, `privacy` = ?, `description` = ?, `exercisesInfo` = ? WHERE `routineId` = ?;";
+      const query =
+        "UPDATE `routine` SET  `tittle` = ?, `privacy` = ?, `description` = ?, `exercisesInfo` = ? WHERE `routineId` = ?;";
 
-    await con.query(query, [
-      tittle,
-      privacy,
-      description,
-      exercisesInfo,
-      routineId,
-    ]);
-  } catch (err) {}
+      await con.query(query, [
+        tittle,
+        privacy,
+        description,
+        exercisesInfo,
+        routineId,
+      ]);
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 /**

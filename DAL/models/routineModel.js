@@ -51,36 +51,37 @@ const find = (userId) => {
  * > La llave del objeto debe tener el mismo nombre que
  * > la columna de la base de datos
  * > e.g. {id: 128937}
- * @param {Object} object
- * @returns // * Object @class RoutineDTO || undefinied
+ * @param {JSON} object
+ * @returns {Promise<JSON>} RoutineDTO || undefinied
  */
 const findOne = (object) => {
   return new Promise(async (resolve, reject) => {
-    const objectKey = Object.keys(object)[0];
-    const objectValue = object[objectKey];
-    const searchResult = await search(objectKey, objectValue);
-    if (searchResult !== undefined) {
-      const routineDto = toDto(searchResult);
-
-      return resolve(routineDto);
+    try {
+      const objectKey = Object.keys(object)[0];
+      const objectValue = object[objectKey];
+      const searchResult = await search(objectKey, objectValue);
+      searchResult === undefined
+        ? resolve(searchResult)
+        : resolve(toDto(searchResult));
+    } catch (err) {
+      reject(err);
     }
-    return resolve(searchResult);
   });
 };
 
 /**
  * > Actualiza registro enviando en parametro objeto con id del registro
- * @param {Object} routineObject
- * @returns //* void
+ * @param {JSON} routineObject
+ * @returns {Promise} void
  */
 const update = (routineObject) => {
   return new Promise((resolve, reject) => {
     const routineEntity = toEntity(routineObject);
     shift(routineEntity)
-      .then(function () {
+      .then(() => {
         return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });
