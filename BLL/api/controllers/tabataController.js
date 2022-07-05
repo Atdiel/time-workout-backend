@@ -52,13 +52,19 @@ const updateTabata = async (req, res) => {
   try {
     //* primero guardamos el id antes matchear la request
     const userId = req.user.id;
+
     //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const tabataId = matchedData(req).tabataid;
     const tabataData = matchedData(req);
-    //FIXME el servicio no debe retornar ningun valor
-    const data = await tabataService.editTabata(userId, tabataId, tabataData);
+
+    await tabataService.editTabata(userId, tabataId, tabataData);
+
     res.send({ success: true });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+  }
 };
 
 /**

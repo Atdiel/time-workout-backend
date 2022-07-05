@@ -31,16 +31,26 @@ const store = (tabataEntity) => {
   });
 };
 
-const search = async (keyToSearch, valueToSearch) => {
-  try {
-    const con = await getConnection();
+/**
+ * > find and return only one tabata log from the user.
+ * @param {String} keyToSearch The name of the field in the\
+ *                               table of the database.
+ * @param {any} valueToSearch The value to search.
+ * @returns {Promise<JSON>} Tabata Entity in JSON format.
+ */
+const search = (keyToSearch, valueToSearch) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = `SELECT * FROM tabata WHERE ${keyToSearch} = ?;`;
-    const searchResult = await con.query(query, [valueToSearch]);
-    return searchResult[0];
-  } catch (err) {
-    console.error(err);
-  }
+      const query = `SELECT * FROM tabata WHERE ${keyToSearch} = ?;`;
+      const searchResult = await con.query(query, [valueToSearch]);
+
+      resolve(searchResult[0]);
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 /**
@@ -63,33 +73,43 @@ const acquire = (userId) => {
   });
 };
 
-const shift = async (tabataEntity) => {
-  try {
-    const con = await getConnection();
+/**
+ * > Update a tabata log from an user.
+ * @param {JSON} tabataEntity Tabata entity in JSON format.
+ * @returns {Promise} void
+ */
+const shift = (tabataEntity) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const tabataId = tabataEntity.tabataId;
-    const tittle = tabataEntity.tittle;
-    const privacy = tabataEntity.privacy;
-    const description = tabataEntity.description;
-    const effortTime = tabataEntity.effortTime;
-    const rounds = tabataEntity.rounds;
-    const restTime = tabataEntity.restTime;
-    const exercises = tabataEntity.exercises;
+      const tabataId = tabataEntity.tabataId;
+      const tittle = tabataEntity.tittle;
+      const privacy = tabataEntity.privacy;
+      const description = tabataEntity.description;
+      const effortTime = tabataEntity.effortTime;
+      const rounds = tabataEntity.rounds;
+      const restTime = tabataEntity.restTime;
+      const exercises = tabataEntity.exercises;
 
-    const query =
-      "UPDATE `tabata` SET  `tittle` = ?, `privacy` = ?, `description` = ?, `effortTime` = ?, `rounds` = ?, `restTime` = ?, `exercises` = ? WHERE `tabataId` = ?;";
+      const query =
+        "UPDATE `tabata` SET  `tittle` = ?, `privacy` = ?, `description` = ?, `effortTime` = ?, `rounds` = ?, `restTime` = ?, `exercises` = ? WHERE `tabataId` = ?;";
 
-    await con.query(query, [
-      tittle,
-      privacy,
-      description,
-      effortTime,
-      rounds,
-      restTime,
-      exercises,
-      tabataId,
-    ]);
-  } catch (err) {}
+      await con.query(query, [
+        tittle,
+        privacy,
+        description,
+        effortTime,
+        rounds,
+        restTime,
+        exercises,
+        tabataId,
+      ]);
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 const removeOne = async (tabataId) => {

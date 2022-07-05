@@ -58,36 +58,46 @@ const myTabatas = (userId) => {
   });
 };
 
-const editTabata = async (userId, tabataId, tabataData) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+/**
+ * > Service with business logic
+ * > in order to update a tabata from the user.
+ * @param {int} userId ID of the user.
+ * @param {int} tabataId ID of the tabata.
+ * @param {JSON} tabataData tabata's DTO in format JSON.
+ * @returns {Promise} void
+ */
+const editTabata = (userId, tabataId, tabataData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: verificar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. verificar que exista el usuario.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
-    }
-    //[x]: 3. verificar que exista la tabata.
-    const checkTabataExist = await tabataModel.findOne({ tabataId: tabataId });
-    if (!checkTabataExist) {
-      throw Error("Tabata Doesn't Exist");
-    }
-    //[x]: 4. actualizamos los datos de la tabata usando "tabataid".
-    tabataData = { ...tabataData, tabataId: tabataId };
-    await tabataModel.update(tabataData);
-    console.log(tabataData);
-    //[x]:  5. si el campo de "privacy" es privado, borrar en registros de la tabla @favoriteWorkout donde el "tabataId" sea la actualizada
-    if (tabataData.privacy === true) {
-      //[x]: implementar favoriteWorkoutModel para realizar esta funcion.
-      await favoriteWorkoutModel.erase({ tabataId: tabataId });
-    }
+      //COMMENT: verificar que exista la tabata.
+      const tabataExists = await tabataModel.findOne({
+        tabataId: tabataId,
+      });
+      if (!tabataExists) {
+        reject(["Tabata Doesn't Exist", null]);
+      }
 
-    //[x]: 6. devolvemos la tabata recien actualizada.
-    const data = await tabataModel.findOne({ tabataId: tabataId });
+      //COMMENT: actualizamos los datos de la tabata usando "tabataid".
+      tabataData = { ...tabataData, tabataId: tabataId };
+      await tabataModel.update(tabataData);
 
-    return data;
-  } catch (err) {}
+      //COMMENT: si es privado, borrar en registros de la tabla @favoriteWorkout.
+      if (tabataData.privacy === true) {
+        await favoriteWorkoutModel.erase({ tabataId: tabataId });
+      }
+
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
+    }
+  });
 };
 
 const removeTabata = async (userId, tabataId) => {
@@ -101,8 +111,8 @@ const removeTabata = async (userId, tabataId) => {
       throw Error("User Doesn't Exist");
     }
     //[x]: 3. verificar que exista la tabata.
-    const checkTabataExist = await tabataModel.findOne({ tabataId: tabataId });
-    if (!checkTabataExist) {
+    const tabataExists = await tabataModel.findOne({ tabataId: tabataId });
+    if (!tabataExists) {
       console.log("error");
       throw Error("Tabata Doesn't Exist");
     }
