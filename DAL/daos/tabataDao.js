@@ -1,23 +1,33 @@
 // const con = require("../config/mysql");
 const { getConnection } = require("../config/mysql");
 
+/**
+ * > create a new tabata's log in the database
+ * @param {JSON} tabataEntity Tabata Entity in JSON format.
+ * @returns {Promise} void
+ */
 const store = (tabataEntity) => {
   return new Promise(async (resolve, reject) => {
-    const con = await getConnection();
+    try {
+      const con = await getConnection();
 
-    const userId = tabataEntity.userId;
-    const tittle = tabataEntity.tittle;
-    const privacy = tabataEntity.privacy;
-    const description = tabataEntity.description;
-    const effortTime = tabataEntity.effortTime;
-    const rounds = tabataEntity.rounds;
-    const restTime = tabataEntity.restTime;
-    const exercises = tabataEntity.exercises;
-    const query = `INSERT INTO tabata (userId, tittle, privacy, description, effortTime, rounds, restTime, exercises, timestamp) 
-    VALUES (${userId}, "${tittle}", ${privacy}, "${description}", ${effortTime}, ${rounds}, ${restTime}, '${exercises}', CURRENT_DATE());`;
+      const userId = tabataEntity.userId;
+      const tittle = tabataEntity.tittle;
+      const privacy = tabataEntity.privacy;
+      const description = tabataEntity.description;
+      const effortTime = tabataEntity.effortTime;
+      const rounds = tabataEntity.rounds;
+      const restTime = tabataEntity.restTime;
+      const exercises = tabataEntity.exercises;
 
-    const resultDB = await con.query(query);
-    resolve(resultDB);
+      const query = `INSERT INTO tabata (userId, tittle, privacy, description, effortTime, rounds, restTime, exercises, timestamp) 
+      VALUES (${userId}, "${tittle}", ${privacy}, "${description}", ${effortTime}, ${rounds}, ${restTime}, '${exercises}', CURRENT_DATE());`;
+      await con.query(query);
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
   });
 };
 

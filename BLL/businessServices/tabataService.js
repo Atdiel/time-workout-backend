@@ -4,29 +4,32 @@ const {
   favoriteWorkoutModel,
 } = require("../../DAL/models");
 
-const newTabata = async (userId, tabataData) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+/**
+ * > Service with the business logic
+ * > for the tabata creation.
+ * @param {int} userId ID of the user.
+ * @param {JSON} tabataData Object with tabata information
+ * @returns {Promise} void
+ */
+const newTabata = (userId, tabataData) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: verificamos que el usuario exista.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. buscar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: creamos registro de la tabata con el id previamente obtenido.
+      tabataData = { ...tabataData, userId: userId };
+      await tabataModel.add(tabataData);
+
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-    //[x]: 3. creamos registro de la tabata con el id previamente obtenido.
-    tabataData = { ...tabataData, userId: userId };
-    const tabataIdCreated = await tabataModel.add(tabataData);
-    //[x]: 4. respondemos con la tabata recien creada.
-    //! IMPORTANTE MANDAR EL OBJETO JSON PARA QUE EL FRONTEND TENGA CONOCIMIENTO DEL ID DE TABATA
-    const tabataCreated = await tabataModel.findOne({
-      tabataId: tabataIdCreated,
-    });
-    const data = { ...tabataCreated };
-    return data;
-  } catch (err) {
-    throw err.message;
-  }
+  });
 };
 
 const myTabatas = async (userId) => {
@@ -35,8 +38,8 @@ const myTabatas = async (userId) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. buscar en la base de datos usuario por id.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
     //[x]: 3. obtener las tabatas de la base de datos
@@ -54,8 +57,8 @@ const editTabata = async (userId, tabataId, tabataData) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. verificar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
     //[x]: 3. verificar que exista la tabata.
@@ -86,8 +89,8 @@ const removeTabata = async (userId, tabataId) => {
     //[x]: 1. obtener el id del usuario por su token.
 
     //[x]: 2. verificar que exista el usuario.
-    const checkUserExist = await userModel.findOne({ userId: userId });
-    if (!checkUserExist) {
+    const userExists = await userModel.findOne({ userId: userId });
+    if (!userExists) {
       throw Error("User Doesn't Exist");
     }
     //[x]: 3. verificar que exista la tabata.

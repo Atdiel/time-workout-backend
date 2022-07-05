@@ -9,18 +9,17 @@ const {
 
 /**
  * > Convierte json en entidad para luego almacenar en BD
- * @param {Object} tabataObject
- * @returns // * tabataId
+ * @param {JSON} tabataObject Tabata JSON object
+ * @returns {Promise} void
  */
 const add = (tabataObject) => {
   return new Promise((resolve, reject) => {
     const tabataEntity = toEntity(tabataObject);
     store(tabataEntity)
-      .then(function (result) {
-        const tabataIdCreated = result.insertId;
-        return resolve(tabataIdCreated);
+      .then(() => {
+        return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });
