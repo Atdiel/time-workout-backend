@@ -9,7 +9,7 @@ const {
 
 /**
  * > Convierte json en entidad para luego almacenar en BD
- * @param {JSON} tabataObject Tabata JSON object
+ * @param {JSON} tabataObject Tabata DTO in JSON format
  * @returns {Promise} void
  */
 const add = (tabataObject) => {
@@ -85,13 +85,18 @@ const update = (tabataObject) => {
   });
 };
 
+/**
+ * > Call to the DAO to delete a tabata.
+ * @param {int} tabataId ID of the tabata.
+ * @returns {Promise} void
+ */
 const eraseById = (tabataId) => {
   return new Promise((resolve, reject) => {
     removeOne(tabataId)
-      .then(function () {
+      .then(() => {
         return resolve();
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });

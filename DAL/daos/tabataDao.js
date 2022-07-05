@@ -112,15 +112,24 @@ const shift = (tabataEntity) => {
   });
 };
 
-const removeOne = async (tabataId) => {
-  try {
-    const con = await getConnection();
+/**
+ * > Delete a tabata log from the database.
+ * @param {int} tabataId ID of the tabata.
+ * @returns {Promise} void
+ */
+const removeOne = (tabataId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = "DELETE FROM `tabata` WHERE `tabataId` = ?;";
-    await con.query(query, [tabataId]);
-  } catch (err) {
-    console.log(err);
-  }
+      const query = "DELETE FROM `tabata` WHERE `tabataId` = ?;";
+      await con.query(query, [tabataId]);
+
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 module.exports = { store, search, acquire, shift, removeOne };

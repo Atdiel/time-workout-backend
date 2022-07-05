@@ -36,7 +36,7 @@ const newTabata = (userId, tabataData) => {
  * > Service with the business logic
  * > in order to show tabatas from the user
  * @param {int} userId ID of the user.
- * @returns {Promise} void
+ * @returns {Promise<Array<JSON>>} Array with tabatas DTOs in JSON format.
  */
 const myTabatas = (userId) => {
   return new Promise(async (resolve, reject) => {
@@ -100,26 +100,36 @@ const editTabata = (userId, tabataId, tabataData) => {
   });
 };
 
-const removeTabata = async (userId, tabataId) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+/**
+ * > Service with the business logic
+ * > in order to delete a tabata.
+ * @param {int} userId ID of the user.
+ * @param {int} tabataId ID of the tabata from the user.
+ */
+const removeTabata = (userId, tabataId) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: verificar que exista el usuario.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. verificar que exista el usuario.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: verificar que exista la tabata.
+      const tabataExists = await tabataModel.findOne({ tabataId: tabataId });
+      if (!tabataExists) {
+        reject(["Tabata Doesn't Exist", null]);
+      }
+
+      //COMMENT: eliminamos la tabata.
+      await tabataModel.eraseById(tabataId);
+
+      resolve();
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-    //[x]: 3. verificar que exista la tabata.
-    const tabataExists = await tabataModel.findOne({ tabataId: tabataId });
-    if (!tabataExists) {
-      console.log("error");
-      throw Error("Tabata Doesn't Exist");
-    }
-    //[x]: 4. eliminamos la tabata.
-    await tabataModel.eraseById(tabataId);
-    //? Se podra enviar algun dato ademas del codigo de respuesta al frontend?
-  } catch (err) {}
+  });
 };
 
 module.exports = { newTabata, myTabatas, editTabata, removeTabata };

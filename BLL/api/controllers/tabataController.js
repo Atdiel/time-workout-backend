@@ -76,11 +76,18 @@ const deleteTabata = async (req, res) => {
   try {
     //* primero guardamos el id antes matchear la request
     const userId = req.user.id;
+
     //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const tabataId = matchedData(req).tabataid;
+
     await tabataService.removeTabata(userId, tabataId);
+
     res.send({ success: true });
-  } catch (err) {}
+  } catch (err) {
+    res.status(400);
+    res.send({ success: false, mssg: err[0] });
+    if (err[1]) console.log(err[1]);
+  }
 };
 
 module.exports = { createTabata, readTabata, updateTabata, deleteTabata };
