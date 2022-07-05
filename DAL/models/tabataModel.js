@@ -27,17 +27,17 @@ const add = (tabataObject) => {
 
 /**
  * > Devuelve todos los resultados por userId
- * @param {Number} userId
- * @returns // * Array
+ * @param {int} userId ID of the user.
+ * @returns {Promise<Array<JSON>>} Array with tabata's DTOs in format JSON
  */
 const find = (userId) => {
   return new Promise((resolve, reject) => {
     acquire(userId)
-      .then(function (result) {
+      .then((result) => {
         const tabataArray = toDtoList(result);
         return resolve(tabataArray);
       })
-      .catch(function (error) {
+      .catch((error) => {
         return reject(error);
       });
   });

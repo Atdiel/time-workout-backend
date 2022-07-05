@@ -43,14 +43,24 @@ const search = async (keyToSearch, valueToSearch) => {
   }
 };
 
-const acquire = async (userId) => {
-  try {
-    const con = await getConnection();
+/**
+ * > Get all the tabata's logs from an user.
+ * @param {int} userId ID of the user.
+ * @returns {Promise<Array<JSON>>} Array with tabata's entities in format JSON
+ */
+const acquire = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const con = await getConnection();
 
-    const query = "SELECT * FROM `tabata` WHERE userId = ?;";
-    const dataCatched = await con.query(query, [userId]);
-    return dataCatched;
-  } catch (err) {}
+      const query = "SELECT * FROM `tabata` WHERE userId = ?;";
+      const dataCatched = await con.query(query, [userId]);
+
+      resolve(dataCatched);
+    } catch (err) {
+      reject(err);
+    }
+  });
 };
 
 const shift = async (tabataEntity) => {

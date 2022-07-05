@@ -32,23 +32,30 @@ const newTabata = (userId, tabataData) => {
   });
 };
 
-const myTabatas = async (userId) => {
-  "use strict";
-  try {
-    //[x]: 1. obtener el id del usuario por su token.
+/**
+ * > Service with the business logic
+ * > in order to show tabatas from the user
+ * @param {int} userId ID of the user.
+ * @returns {Promise} void
+ */
+const myTabatas = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    "use strict";
+    try {
+      //COMMENT: buscar en la base de datos usuario por id.
+      const userExists = await userModel.findOne({ userId: userId });
+      if (!userExists) {
+        reject(["User Doesn't Exist", null]);
+      }
 
-    //[x]: 2. buscar en la base de datos usuario por id.
-    const userExists = await userModel.findOne({ userId: userId });
-    if (!userExists) {
-      throw Error("User Doesn't Exist");
+      //COMMENT: obtener las tabatas de la base de datos
+      const userTabatasList = await tabataModel.find(userId);
+
+      resolve(userTabatasList);
+    } catch (err) {
+      reject(["Error del Servidor", err]);
     }
-    //[x]: 3. obtener las tabatas de la base de datos
-    // ! EL DTO TABATA CONVERTIRA EL RESULTADO DE LA DB A UNA LISTA CON OBJETOS JSON
-    const userTabatasList = await tabataModel.find(userId);
-    //[x]: 4. mandar al frontend el resultado.
-    const data = userTabatasList;
-    return data;
-  } catch (err) {}
+  });
 };
 
 const editTabata = async (userId, tabataId, tabataData) => {
