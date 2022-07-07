@@ -19,9 +19,7 @@ const createChallenge = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
@@ -36,9 +34,7 @@ const readChallenge = async (req, res) => {
     const data = await challengeService.myChallenges(userId);
     res.send({ success: true, data });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
@@ -60,9 +56,7 @@ const updateChallenge = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
@@ -82,9 +76,7 @@ const deleteChallenge = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 

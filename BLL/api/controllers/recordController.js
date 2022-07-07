@@ -18,9 +18,7 @@ const createRecord = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
@@ -36,9 +34,7 @@ const readRecord = async (req, res) => {
 
     res.send({ success: true, data });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
@@ -60,9 +56,7 @@ const updateRecord = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
@@ -83,9 +77,7 @@ const deleteRecord = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 

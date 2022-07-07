@@ -18,9 +18,7 @@ const createTabata = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
@@ -37,9 +35,7 @@ const readTabata = async (req, res) => {
 
     res.send({ success: true, data });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
@@ -61,9 +57,7 @@ const updateTabata = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
@@ -84,9 +78,7 @@ const deleteTabata = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
+    handleHttpError(res, err);
   }
 };
 
