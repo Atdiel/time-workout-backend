@@ -6,17 +6,20 @@ const loggerWebhook = require("../tools/loggerWebhook");
  * @param {Array} err Error Object.
  */
 const handleHttpError = (res, err) => {
-  //TODO: create the handleLogger function.
-  handleLogger();
-
   if (err[0]) {
     res.status(err[2]);
     res.send({ success: false, mssg: err[0] });
+
+    handleLogger(err[2]);
   } else {
     res.status(500).send({ success: false, mssg: "Something was wrong" });
+
+    handleLogger(err);
   }
 };
 
-const handleLogger = () => {};
+const handleLogger = (message) => {
+  loggerWebhook.write(message);
+};
 
 module.exports = { handleHttpError };
