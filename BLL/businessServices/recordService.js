@@ -13,7 +13,7 @@ const newRecord = (userId, recordData) => {
       //COMMENT: buscar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: creamos registro del record con el "userId" previamente obtenido.
@@ -22,7 +22,7 @@ const newRecord = (userId, recordData) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -40,7 +40,7 @@ const myRecords = (userId) => {
       //COMMENT: buscar en la base de datos usuario por id.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: obtener los records de la base de datos.
@@ -48,7 +48,7 @@ const myRecords = (userId) => {
 
       resolve(userRecordList);
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -68,7 +68,7 @@ const editRecord = (userId, recordId, recordData) => {
       //COMMENT: verificar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que exista el record.
@@ -76,12 +76,12 @@ const editRecord = (userId, recordId, recordData) => {
         recordId: recordId,
       });
       if (!recordExists) {
-        reject(["Record Doesn't Exist", null]);
+        reject([null, "Record Doesn't Exist", 404]);
       }
 
       //COMMENT: verficar que el record pertenezca al usuario.
       if (recordExists.userId !== userId) {
-        reject(["This Record Ain't Your Own", null]);
+        reject([null, "This Record Ain't Your Own", 403]);
       }
 
       //COMMENT: actualizamos los datos del record usando "recordid".
@@ -90,7 +90,7 @@ const editRecord = (userId, recordId, recordData) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -108,7 +108,7 @@ const removeRecord = (userId, recordId) => {
       //COMMENT: verificar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que exista el record.
@@ -116,12 +116,12 @@ const removeRecord = (userId, recordId) => {
         recordId: recordId,
       });
       if (!recordExists) {
-        reject(["Routine Doesn't Exist", null]);
+        reject([null, "Routine Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que el record sea propio del usuario
       if (recordExists.userId !== userId) {
-        reject(["This Record Ain't Your own", null]);
+        reject([null, "This Record Ain't Your own", 403]);
       }
 
       //COMMENT: eliminamos el record.
@@ -129,7 +129,7 @@ const removeRecord = (userId, recordId) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };

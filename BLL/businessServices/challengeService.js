@@ -14,7 +14,7 @@ const newChallenge = (userId, challengeData) => {
       //COMMENT: buscar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exists", null]);
+        reject([null, "User Doesn't Exists", 404]);
       }
 
       //COMMENT: creamos registro del challenge.
@@ -23,7 +23,7 @@ const newChallenge = (userId, challengeData) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -41,7 +41,7 @@ const myChallenges = (userId) => {
       //COMMENT: buscar en la base de datos usuario por id.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: 3. obtener los challenges de la base de datos.
@@ -49,7 +49,7 @@ const myChallenges = (userId) => {
 
       resolve(userChallengeList);
     } catch (err) {
-      reject(["Error del servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -69,7 +69,7 @@ const editChallenge = (userId, challengeId, challengeData) => {
       //COMMENT: verificar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que exista el challenge.
@@ -77,12 +77,12 @@ const editChallenge = (userId, challengeId, challengeData) => {
         challengeId: challengeId,
       });
       if (!challengeExists) {
-        reject(["Challenge Doesn't Exist", null]);
+        reject([null, "Challenge Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que le pertenezca al usuario.
       if (challengeExists.userId !== userId) {
-        reject(["This Challenge Ain't Your Own", null]);
+        reject([null, "This Challenge Ain't Your Own", 403]);
       }
 
       //COMMENT: actualizamos los datos del challenge usando "challengeid".
@@ -90,7 +90,7 @@ const editChallenge = (userId, challengeId, challengeData) => {
       await challengeModel.update(challengeData);
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -108,7 +108,7 @@ const removeChallenge = (userId, challengeId) => {
       //COMMENT: verificar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que exista el challenge.
@@ -116,18 +116,18 @@ const removeChallenge = (userId, challengeId) => {
         challengeId: challengeId,
       });
       if (!challengeExists) {
-        reject(["Challenge Doesn't Exist", null]);
+        reject([null, "Challenge Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que le pertenezca al usuario.
       if (challengeExists.userId !== userId) {
-        reject(["This Challenge Ain't Your Own", null]);
+        reject([null, "This Challenge Ain't Your Own", 403]);
       }
 
       await challengeModel.eraseById(challengeId);
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };

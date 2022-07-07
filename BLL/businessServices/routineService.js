@@ -18,7 +18,7 @@ const newRoutine = (userId, routineData) => {
       //COMMENT: buscar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: creamos registro de la routine con el "userId".
@@ -27,7 +27,7 @@ const newRoutine = (userId, routineData) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -45,7 +45,7 @@ const myRoutines = (userId) => {
       //COMMENT: buscar en la base de datos usuario por id.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: obtener las rutinas de la base de datos.
@@ -53,7 +53,7 @@ const myRoutines = (userId) => {
 
       resolve(userRoutineList);
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -73,7 +73,7 @@ const editRoutine = (userId, routineId, routineData) => {
       //COMMENT: verificar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que exista la rutina.
@@ -81,12 +81,12 @@ const editRoutine = (userId, routineId, routineData) => {
         routineId: routineId,
       });
       if (!routineExists) {
-        reject(["Routine Doesn't Exist", null]);
+        reject([null, "Routine Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que la routine sea propia del usuario.
       if (routineExists.userId !== userId) {
-        reject(["This Routine Ain't Your Own", null]);
+        reject([null, "This Routine Ain't Your Own", 403]);
       }
 
       //COMMENT: actualizamos los datos de la tabata usando "routineid".
@@ -100,7 +100,7 @@ const editRoutine = (userId, routineId, routineData) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -119,7 +119,7 @@ const removeRoutine = (userId, routineId) => {
       //COMMENT: verificar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que exista la rutina.
@@ -127,12 +127,12 @@ const removeRoutine = (userId, routineId) => {
         routineId: routineId,
       });
       if (!routineExists) {
-        reject(["Routine Doesn't Exist", null]);
+        reject([null, "Routine Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que la rutina sea propia del usuario.
       if (routineExists.userId !== userId) {
-        reject(["This Routine Ain't Your Own", null]);
+        reject([null, "This Routine Ain't Your Own", 403]);
       }
 
       //COMMENT: eliminamos la rutina.
@@ -140,7 +140,7 @@ const removeRoutine = (userId, routineId) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };

@@ -20,14 +20,14 @@ const userSignUp = (userData) => {
       //COMMENT: Verificamos que el correo no este en uso por otro usuario
       var userFound = await userModel.findOne({ email: userData.email });
       if (userFound) {
-        reject(["Este Correo ya esta registrado", null]);
+        reject([null, "Este Correo ya esta registrado", 409]);
       }
 
       //COMMENT: Registramos el usuario en la BD
       await userModel.add(userData);
       resolve();
     } catch (err) {
-      reject(["Error del servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -44,7 +44,7 @@ const userSignIn = (userData) => {
       //COMMENT: consultar a la base de datos por email.
       let userFound = await userModel.findOne({ email: userData.email });
       if (!userFound) {
-        reject(["No existe usuario con este email", null]);
+        reject([null, "No existe usuario con este email", 404]);
       }
       const hashedPassword = userFound.password;
       userFound = { ...userFound, password: undefined, timestamp: undefined };
@@ -55,7 +55,7 @@ const userSignIn = (userData) => {
         hashedPassword
       );
       if (!checkValidPassword) {
-        reject(["Contraseña incorrecta", null]);
+        reject([null, "Contraseña incorrecta", 403]);
       }
 
       //COMMENT: mandamos token para futuras peticiones.
@@ -65,7 +65,7 @@ const userSignIn = (userData) => {
       };
       resolve(data);
     } catch (err) {
-      reject(["Error del servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -83,7 +83,7 @@ const updateAccount = (accountId, userData) => {
       //COMMENT: usar el id de el token para verificar que exista el usuario.
       var userFoundById = await userModel.findOne({ userId: accountId });
       if (!userFoundById) {
-        reject(["Usuario no encontrado", null]);
+        reject([null, "Usuario no encontrado", 404]);
       }
 
       //COMMENT: asegurarse que no este introduciendo un correo ya registrado a menos que sea el suyo.
@@ -92,7 +92,7 @@ const updateAccount = (accountId, userData) => {
           email: userData.email,
         });
         if (checkEmailExist) {
-          reject(["Este Correo ya se a registrado", null]);
+          reject([null, "Este Correo ya se a registrado", 409]);
         }
       }
 
@@ -107,7 +107,7 @@ const updateAccount = (accountId, userData) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del servidor", err]);
+      reject([err]);
     }
   });
 };

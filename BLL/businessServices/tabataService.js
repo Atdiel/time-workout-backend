@@ -18,7 +18,7 @@ const newTabata = (userId, tabataData) => {
       //COMMENT: verificamos que el usuario exista.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: creamos registro de la tabata con el id previamente obtenido.
@@ -27,7 +27,7 @@ const newTabata = (userId, tabataData) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -45,7 +45,7 @@ const myTabatas = (userId) => {
       //COMMENT: buscar en la base de datos usuario por id.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: obtener las tabatas de la base de datos
@@ -53,7 +53,7 @@ const myTabatas = (userId) => {
 
       resolve(userTabatasList);
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -73,7 +73,7 @@ const editTabata = (userId, tabataId, tabataData) => {
       //COMMENT: verificar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que exista la tabata.
@@ -81,7 +81,7 @@ const editTabata = (userId, tabataId, tabataData) => {
         tabataId: tabataId,
       });
       if (!tabataExists) {
-        reject(["Tabata Doesn't Exist", null]);
+        reject([null, "Tabata Doesn't Exist", 404]);
       }
 
       //COMMENT: actualizamos los datos de la tabata usando "tabataid".
@@ -95,7 +95,7 @@ const editTabata = (userId, tabataId, tabataData) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
@@ -113,13 +113,13 @@ const removeTabata = (userId, tabataId) => {
       //COMMENT: verificar que exista el usuario.
       const userExists = await userModel.findOne({ userId: userId });
       if (!userExists) {
-        reject(["User Doesn't Exist", null]);
+        reject([null, "User Doesn't Exist", 404]);
       }
 
       //COMMENT: verificar que exista la tabata.
       const tabataExists = await tabataModel.findOne({ tabataId: tabataId });
       if (!tabataExists) {
-        reject(["Tabata Doesn't Exist", null]);
+        reject([null, "Tabata Doesn't Exist", 404]);
       }
 
       //COMMENT: eliminamos la tabata.
@@ -127,7 +127,7 @@ const removeTabata = (userId, tabataId) => {
 
       resolve();
     } catch (err) {
-      reject(["Error del Servidor", err]);
+      reject([err]);
     }
   });
 };
