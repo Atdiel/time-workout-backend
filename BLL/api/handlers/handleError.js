@@ -7,19 +7,18 @@ const loggerWebhook = require("../tools/loggerWebhook");
  */
 const handleHttpError = (res, err) => {
   if (err[0]) {
-    res.status(err[2]);
-    res.send({ success: false, mssg: err[0] });
+    res.status(500).send({ success: false, mssg: "Internal Server Error" });
 
-    handleLogger(err[2]);
+    handleLogger(err[0]);
   } else {
-    res.status(500).send({ success: false, mssg: "Something was wrong" });
-
-    handleLogger(err);
+    res.status(err[2]).send({ success: false, mssg: err[1] });
   }
 };
 
 const handleLogger = (message) => {
-  loggerWebhook.write(message);
+  //? The util.inspect() is used to convert the Error Object to String, otherwise
+  //? logger does not work.
+  loggerWebhook.write(require("util").inspect(message));
 };
 
 module.exports = { handleHttpError };
