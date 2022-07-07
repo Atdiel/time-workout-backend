@@ -1,13 +1,24 @@
+const loggerWebhook = require("../tools/loggerWebhook");
+
 /**
- * maneja los errores, enviando una respuesta con un mensaje y el error
- * @param {*} res
- * @param {*} message
- * @param {*} err
- * @param {*} code
+ * > manage the error responses to the client.
+ * @param {JSON} res Object response provided for the server.
+ * @param {Array} err Error Object
  */
-const handleHttpError = (res, message, err = "", code = 403) => {
-  res.status(code);
-  res.send({ message: message, error: err });
+const handleHttpError = (res, err) => {
+  handleLogger();
+  if (err[0]) {
+    if (err[1]) {
+      res.status(500);
+    } else {
+      res.status(400);
+    }
+    res.send({ success: false, mssg: err[0] });
+  } else {
+    res.status(500).send({ success: false, mssg: "Something was wrong" });
+  }
 };
+
+const handleLogger = () => {};
 
 module.exports = { handleHttpError };
