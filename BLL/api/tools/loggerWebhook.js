@@ -7,6 +7,12 @@ const loggerStream = {
       text: message,
     });
   },
+  actived: () => {
+    if (process.env.SLACK_WEBHOOK) {
+      return true;
+    }
+    return false;
+  },
 };
 
 module.exports = loggerStream;
