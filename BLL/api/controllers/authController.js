@@ -15,10 +15,7 @@ const registerUser = async (req, res) => {
 
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
-    // handleHttpError(res, "ERROR_CONTROLADOR_AUTH", err);
+    handleHttpError(res, err);
   }
 };
 
@@ -36,10 +33,7 @@ const loginUser = async (req, res) => {
 
     res.send({ success: true, data });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
-    // handleHttpError(res, "ERROR_LOGIN", err);
+    handleHttpError(res, err);
   }
 };
 
@@ -58,10 +52,7 @@ const updateUser = async (req, res) => {
     await authService.updateAccount(userId, userData);
     res.send({ success: true });
   } catch (err) {
-    res.status(400);
-    res.send({ success: false, mssg: err[0] });
-    if (err[1]) console.log(err[1]);
-    // handleHttpError(res, "ERROR_UPDATE_USER", err);
+    handleHttpError(res, err);
   }
 };
 
