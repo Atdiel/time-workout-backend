@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-//> CONTROLLERS
+//* CONTROLLERS ⚡⚡
 const {
   createRecord,
   readRecord,
@@ -9,19 +9,20 @@ const {
   deleteRecord,
 } = require("../controllers/recordController");
 
-//> MIDDLEWARE
+//* MIDDLEWARE 🔍🔍
 const { authMiddleware } = require("../middlewares/tokenMiddleware");
 
-//> VALIDATORS
+//* VALIDATORS ✅✅
 const {
   recordIdValidator,
   recordValidator,
 } = require("../validators/recordValidator");
 
-//> ROUTES
+//* ROUTES ✈️✈️
+//> http://localhost:{PORT}/api/v1/record/{subroute}
 
 /**
- * > Consultar Records de un usuario.
+ * > GET >> subroute = /
  * @openapi
  * /record:
  *  get:
@@ -44,7 +45,7 @@ const {
 router.get("/", authMiddleware, readRecord);
 
 /**
- * > Agregar un Record para un usuario.
+ * > POST >> subroute = /
  * @openapi
  * /record:
  *  post:
@@ -73,7 +74,7 @@ router.get("/", authMiddleware, readRecord);
 router.post("/", authMiddleware, recordValidator, createRecord);
 
 /**
- * > Editar un Record de un usuario.
+ * > PUT >> subroute = /{recordid:String}
  * @openapi
  * /record/{recordid}:
  *  put:
@@ -117,7 +118,7 @@ router.put(
 );
 
 /**
- * > Eliminar un Record de un usuario.
+ * > DELETE >> subroute = /{recordid:String}
  * @openapi
  * /record/{recordid}:
  *  delete:

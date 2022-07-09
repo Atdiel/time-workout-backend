@@ -1,22 +1,25 @@
 const express = require("express");
 const router = express.Router();
-// > CONTROLLER
+
+//* CONTROLLERS ⚡⚡
 const {
   createTabata,
   readTabata,
   updateTabata,
   deleteTabata,
 } = require("../controllers/tabataController");
-// > MIDDLEWARE
+
+//* MIDDLEWARE 🔍🔍
 const { authMiddleware } = require("../middlewares/tokenMiddleware");
-// > VALIDATOR
+
+//* VALIDATORS ✅✅
 const {
   tabataValidator,
   tabataIdValidator,
 } = require("../validators/tabataValidator");
 
-//[x]: crear validator para tabata.
-//[x]: crear validator por tabataId.
+//* ROUTES ✈️✈️
+//> http://localhost:{PORT}/api/v1/tabata/{subroute}
 
 /**
  * > Consultar Tabatas de un usuario.

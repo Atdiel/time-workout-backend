@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-// > CONTROLLERS
+//* CONTROLLERS ⚡⚡
 const {
   createRoutine,
   readRoutine,
@@ -9,18 +9,20 @@ const {
   deleteRoutine,
 } = require("../controllers/routineController");
 
-// > MIDDLEWARES
+//* MIDDLEWARE 🔍🔍
 const { authMiddleware } = require("../middlewares/tokenMiddleware");
 
-// > VALIDATORS
+//* VALIDATORS ✅✅
 const {
   routineValidator,
   routineIdValidator,
 } = require("../validators/routineValidator");
 
-//[x]: implementar validators
+//* ROUTES ✈️✈️
+//> http://localhost:{PORT}/api/v1/routine/{subroute}
+
 /**
- * > Consultar Rutinas de un usuario.
+ * > GET >> subroute = /
  * @openapi
  * /routine:
  *  get:
@@ -40,10 +42,10 @@ const {
  *      "403":
  *        $ref: "#/components/responses/unauthorizedError"
  */
-router.get("/", authMiddleware, readRoutine); //[x]: implementar controller get
+router.get("/", authMiddleware, readRoutine);
 
 /**
- * > Agregar una Rutina para un usuario.
+ * > POST >> subroute = /
  * @openapi
  * /routine:
  *  post:
@@ -69,10 +71,10 @@ router.get("/", authMiddleware, readRoutine); //[x]: implementar controller get
  *      "403":
  *        $ref: "#/components/responses/unauthorizedError"
  */
-router.post("/", authMiddleware, routineValidator, createRoutine); //[x]: implementar controller post
+router.post("/", authMiddleware, routineValidator, createRoutine);
 
 /**
- * > Editar una Rutina de un usuario.
+ * > PUT >> subroute = /{routineid:String}
  * @openapi
  * /routine/{routineid}:
  *  put:
@@ -112,10 +114,10 @@ router.put(
   routineIdValidator,
   routineValidator,
   updateRoutine
-); //[x]: implementar controller put
+);
 
 /**
- * > Eliminar una Rutina de un usuario.
+ * > DELETE >> subroute = /{routineid:String}
  * @openapi
  * /routine/{routineid}:
  *  delete:
@@ -139,6 +141,6 @@ router.put(
  *      "403":
  *        $ref: "#/components/responses/unauthorizedError"
  */
-router.delete("/:routineid", authMiddleware, routineIdValidator, deleteRoutine); //[x]: implementar controller delete
+router.delete("/:routineid", authMiddleware, routineIdValidator, deleteRoutine);
 
 module.exports = router;

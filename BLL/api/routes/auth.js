@@ -1,18 +1,27 @@
 const express = require("express");
 const router = express.Router();
-const {
-  registerValidator,
-  loginValidator,
-} = require("../validators/authValidator");
+
+//* CONTROLLERS ⚡⚡
 const {
   registerUser,
   loginUser,
   updateUser,
 } = require("../controllers/authController");
+
+//* MIDDLEWARE 🔍🔍
 const { authMiddleware } = require("../middlewares/tokenMiddleware");
 
+//* VALIDATORS ✅✅
+const {
+  registerValidator,
+  loginValidator,
+} = require("../validators/authValidator");
+
+//* ROUTES ✈️✈️
+//> http://localhost:{PORT}/api/v1/auth/{subroute}
+
 /**
- * > Registrar a un usuario nuevo
+ * > POST >> subroute = /register
  * @openapi
  * /auth/register:
  *  post:
@@ -40,7 +49,7 @@ const { authMiddleware } = require("../middlewares/tokenMiddleware");
 router.post("/register", registerValidator, registerUser);
 
 /**
- * > Validar credencianles de  usuario
+ * > POST >> subroute = /login
  * @openapi
  * /auth/login:
  *  post:
@@ -71,7 +80,7 @@ router.post("/register", registerValidator, registerUser);
 router.post("/login", loginValidator, loginUser);
 
 /**
- * > Editar a un usuario usando middleware para validar usuario
+ * > PUT >> subroute = /edit
  * @openapi
  * /auth/edit:
  *  put:

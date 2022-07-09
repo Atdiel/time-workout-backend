@@ -1,23 +1,28 @@
 const express = require("express");
 const router = express.Router();
 
-//> CONTROLLERS
+//* CONTROLLERS ⚡⚡
 const {
   createChallenge,
   readChallenge,
   updateChallenge,
   deleteChallenge,
 } = require("../controllers/challengeController");
-//> MIDDLEWARE
+
+//* MIDDLEWARE 🔍🔍
 const { authMiddleware } = require("../middlewares/tokenMiddleware");
-//> VALIDATORS
+
+//* VALIDATORS ✅✅
 const {
   challengeValidator,
   challengeIdValidator,
 } = require("../validators/challengeValidator");
 
+//* ROUTES ✈️✈️
+//> http://localhost:{PORT}/api/v1/challenge/{subroute}
+
 /**
- * > Consultar Challenges de un usuario.
+ * > GET >> subroute = /
  * @openapi
  * /challenge:
  *  get:
@@ -40,7 +45,7 @@ const {
 router.get("/", authMiddleware, readChallenge);
 
 /**
- * > Agregar un Challenge para un usuario.
+ * > POST >> subroute = /
  * @openapi
  * /challenge:
  *  post:
@@ -70,7 +75,7 @@ router.get("/", authMiddleware, readChallenge);
 router.post("/", authMiddleware, challengeValidator, createChallenge);
 
 /**
- * > Editar un Challenge de un usuario.
+ * > PUT >> subroute = /{challengeid:String}
  * @openapi
  * /challenge/{challengeid}:
  *  put:
@@ -114,7 +119,7 @@ router.put(
 );
 
 /**
- * > Eliminar un Challenge de un usuario.
+ * > DELETE >> subroute = /{challengeid:String}
  * @openapi
  * /challenge/{challengeid}:
  *  delete:

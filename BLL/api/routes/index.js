@@ -2,27 +2,23 @@ const express = require("express");
 const fs = require("fs");
 const router = express.Router();
 
-/**
- * constante que define la ruta absoluta actual de este fichero
- */
-const PATH_ROUTES = __dirname;
+const ROUTES_DIR = __dirname;
 
 /**
- * removemos la extension de fichero ruta ej: index.js -> index
- * @param {*} filename
- * @returns
+ * > Remove extension from a given filename.
+ * @param {String} filename
+ * @returns {String} The filename without extension.
  */
 const removeExtension = (filename) => {
   return filename.split(".").shift();
 };
 
-/**
- * leemos las rutas dinamicamente -> router.use("/ruta", require("ruta"))
- */
-fs.readdirSync(PATH_ROUTES).filter((file) => {
-  const name = removeExtension(file);
-  if (name !== "index") {
-    router.use(`/${name}`, require(`./${file}`));
+//> dynamic reading for all API's routes.
+fs.readdirSync(ROUTES_DIR).filter((filename) => {
+  const routeName = removeExtension(filename);
+
+  if (routeName !== "index") {
+    router.use(`/${routeName}`, require(`./${filename}`));
   }
 });
 
