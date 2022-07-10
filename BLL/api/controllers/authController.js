@@ -1,6 +1,6 @@
 const { matchedData } = require("express-validator");
-const { handleHttpError } = require("../handlers/handleError");
 const authService = require("../../businessServices/authService");
+const { handleHttpError } = require("../handlers/handleError");
 
 /**
  * ? se encarga de registrar al usuario y crear su token

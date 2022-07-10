@@ -1,5 +1,6 @@
 const { matchedData } = require("express-validator");
 const tabataService = require("../../businessServices/tabataService");
+const { handleHttpError } = require("../handlers/handleError");
 
 /**
  * ? crear una tabata para un usuario

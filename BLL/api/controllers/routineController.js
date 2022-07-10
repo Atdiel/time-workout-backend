@@ -1,5 +1,6 @@
 const { matchedData } = require("express-validator");
 const routineService = require("../../businessServices/routineService");
+const { handleHttpError } = require("../handlers/handleError");
 
 /**
  * ? crear una nueva routine para un usuario

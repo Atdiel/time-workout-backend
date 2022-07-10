@@ -1,5 +1,6 @@
 const { matchedData } = require("express-validator");
 const challengeService = require("../../businessServices/challengeService");
+const { handleHttpError } = require("../handlers/handleError");
 
 /**
  * ? crear un nuevo challenge al usuario

@@ -1,5 +1,6 @@
 const { matchedData } = require("express-validator");
 const recordService = require("../../businessServices/recordService");
+const { handleHttpError } = require("../handlers/handleError");
 
 /**
  * ? crear un record para un usuario
