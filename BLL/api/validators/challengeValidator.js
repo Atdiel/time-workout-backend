@@ -1,44 +1,86 @@
 const { check, param } = require("express-validator");
 const handleResults = require("../handlers/handleValidator");
 
+/**
+ * > Validate challenge form.
+ */
 const challengeValidator = [
   check("tittle")
     .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
-    .withMessage("missing tittle")
+    .withMessage("title shouldn't be empty")
+    .bail()
     .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .isLength({ max: 24 })
-    .withMessage("Length max 24"),
+    .withMessage("max title length is 120"),
+
   check("description")
     .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
-    .withMessage("missing description")
+    .withMessage("description shouldn't be empty")
+    .bail()
     .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .isLength({ max: 120 })
-    .withMessage("Length max 120"),
+    .withMessage("max description length is 120"),
+
   check("startDate")
     .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
-    .withMessage("missing startDate")
-    .isISO8601(),
+    .withMessage("startDate shouldn't be empty")
+    .bail()
+    .isISO8601()
+    .withMessage("Invalid date format"),
+
   check("endDate")
     .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
-    .withMessage("missing startDate")
+    .withMessage("endDate shouldn't be empty")
+    .bail()
     .isISO8601()
+    .withMessage("Invalid date format")
+    .bail()
     .custom((value, { req }) => {
       if (new Date(value) < new Date(req.body.startDate)) {
-        throw new Error("End date must be valid and after start date");
+        throw new Error("endDate must be equal or later than startDate");
       }
       return true;
     }),
+
   check("days")
-    .not()
-    .isArray()
-    .withMessage("days must be an object instead array"),
+    .isObject()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    ),
+
   check("days.days")
     .exists()
-    .withMessage("missing property: days within key: days")
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
     .bail()
     .isArray({ max: 7 })
     .withMessage("Week have only 7 days")
@@ -46,7 +88,7 @@ const challengeValidator = [
     .custom((values) => {
       for (let index = 0; index < values.length; index++) {
         if (typeof values[index] !== "string") {
-          throw new Error("Solo deben ser strings");
+          throw new Error("Strings instead int, try with quotes");
         }
         if (
           values[index] === "l" ||
@@ -59,27 +101,29 @@ const challengeValidator = [
         ) {
           continue;
         } else {
-          throw new Error("Dias invalidos");
+          throw new Error(`${values[index]} isn't a valid day`);
         }
       }
-      console.log("pase por aqui");
       for (let a = 0; a < values.length - 1; a++) {
         for (let b = a + 1; b < values.length; b++) {
           if (values[a] === values[b]) {
-            throw new Error("Los dias no deben ser iguales");
+            throw new Error(`You repeated ${values[a]} in the array`);
           }
         }
       }
       return true;
     }),
+
   handleResults,
 ];
 
 const challengeIdValidator = [
   param("challengeid")
-    .exists()
-    .withMessage("Should include challengeid in the URI")
-    .notEmpty(),
+    .isNumeric()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    ),
+
   handleResults,
 ];
 
