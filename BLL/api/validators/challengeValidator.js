@@ -20,7 +20,7 @@ const challengeValidator = [
     )
     .bail()
     .isLength({ max: 24 })
-    .withMessage("max title length is 120"),
+    .withMessage("max title length is 24"),
 
   check("description")
     .exists()
