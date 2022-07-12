@@ -11,17 +11,27 @@ const registerValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
     .withMessage("name shouldn't be empty")
     .bail()
     .isLength({ min: 3 })
-    .withMessage("name too short")
+    .withMessage("min name length is 3")
     .bail()
     .isLength({ max: 24 })
-    .withMessage("name too large"),
+    .withMessage("max name length is 24"),
 
   check("lastName")
     .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
+    .isString()
     .withMessage(
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
@@ -30,10 +40,10 @@ const registerValidator = [
     .withMessage("lastName shouldn't be empty")
     .bail()
     .isLength({ min: 6 })
-    .withMessage("lastName too short")
+    .withMessage("min lastName length is 6")
     .bail()
     .isLength({ max: 24 })
-    .withMessage("lastName too large"),
+    .withMessage("max lastName length is 24"),
 
   check("password")
     .exists()
@@ -41,16 +51,27 @@ const registerValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
     .withMessage("password shouldn't be empty")
+    .bail()
     .isLength({ min: 8 })
-    .withMessage("password too short")
+    .withMessage("min password length is 8")
     .bail()
     .isLength({ max: 30 })
-    .withMessage("password too large"),
+    .withMessage("max password length is 30"),
 
   check("email")
     .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
+    .isString()
     .withMessage(
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
@@ -62,13 +83,18 @@ const registerValidator = [
     .withMessage("Invalid email")
     .bail()
     .isLength({ min: 10 })
-    .withMessage("email too short")
+    .withMessage("min email length is 10")
     .bail()
     .isLength({ max: 48 })
-    .withMessage("email too large"),
+    .withMessage("max email length is 48"),
 
   check("gender")
     .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
+    .isString()
     .withMessage(
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
@@ -85,6 +111,11 @@ const registerValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
     .withMessage("birthday shouldn't be empty")
     .bail()
@@ -96,10 +127,20 @@ const registerValidator = [
     .exists()
     .withMessage(
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     ),
 
   check("nationality")
     .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
+    .isString()
     .withMessage(
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
@@ -123,6 +164,11 @@ const loginValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
     .withMessage("email shouldn't be empty")
     .bail()
@@ -130,10 +176,10 @@ const loginValidator = [
     .withMessage("Invalid email")
     .bail()
     .isLength({ min: 10 })
-    .withMessage("email too short")
+    .withMessage("min email length is 10")
     .bail()
     .isLength({ max: 48 })
-    .withMessage("email too large"),
+    .withMessage("max email length is 48"),
 
   check("password")
     .exists()
@@ -141,13 +187,19 @@ const loginValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
     .withMessage("password shouldn't be empty")
+    .bail()
     .isLength({ min: 8 })
-    .withMessage("password too short")
+    .withMessage("min password length is 8")
     .bail()
     .isLength({ max: 30 })
-    .withMessage("password too large"),
+    .withMessage("max password length is 30"),
 
   handleResults,
 ];
