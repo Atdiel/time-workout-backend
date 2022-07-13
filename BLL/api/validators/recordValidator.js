@@ -11,14 +11,24 @@ const recordValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
     .notEmpty()
-    .withMessage("tittle shouldn't be empty")
+    .withMessage("title shouldn't be empty")
     .bail()
     .isLength({ max: 30 })
-    .withMessage("tittle too large"),
+    .withMessage("max title length is 30"),
 
   check("description")
     .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
+    .isString()
     .withMessage(
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
@@ -27,11 +37,28 @@ const recordValidator = [
     .withMessage("description shouldn't be empty")
     .bail()
     .isLength({ max: 120 })
-    .withMessage("description too large. Max length 120"),
+    .withMessage("max description length is 120"),
 
   check("recordTable")
-    .isObject()
-    .withMessage("recordTable should be an JSON object"),
+    .exists()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
+    .bail()
+    .custom((value) => {
+      if (value.constructor.name === "Object") {
+        if (value.records) {
+          if (
+            value.records.constructor.name === "Array" &&
+            value.records.length > 0
+          )
+            return true;
+        }
+      }
+      throw new Error(
+        "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+      );
+    }),
 
   check("recordTable.records.*.timestamp")
     .exists()
@@ -39,13 +66,10 @@ const recordValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
-    .custom((_, { req }) => {
-      let obj = req.body.recordTable.records;
-      if (obj.constructor.name == "Array") {
-        return true;
-      }
-      throw new Error("records should be an array");
-    })
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
     .bail()
     .isISO8601()
     .withMessage("timestamp invalid date"),
@@ -56,12 +80,20 @@ const recordValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
-    .isInt()
-    .withMessage("amount should been a number, try without quotes")
-    .bail()
-    .not()
-    .isIn([0])
-    .withMessage("amount shouldn't be a zero value"),
+    .custom((value) => {
+      if (value.constructor.name === "Number") {
+        /**
+         * * 0 < amount < 1001
+         *  */
+        if (value <= 0) throw new Error("amount shouldn't be equal to 0");
+        if (value > 1000) throw new Error("max amount value is 1000");
+
+        if (value % 2 === 0 || value % 2 === 1) return true;
+      }
+      throw new Error(
+        "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+      );
+    }),
 
   handleResults,
 ];
@@ -70,10 +102,7 @@ const recordValidator = [
  * > Validate record ID in the URI.
  */
 const recordIdValidator = [
-  param("recordid")
-    .exists()
-    .withMessage("Should include recordid in the URI")
-    .notEmpty(),
+  param("recordid").isNumeric().withMessage("Invalid record ID in the URI"),
 
   handleResults,
 ];
