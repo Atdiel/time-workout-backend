@@ -11,13 +11,13 @@ const challengeValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
-    .notEmpty()
-    .withMessage("title shouldn't be empty")
-    .bail()
     .isString()
     .withMessage(
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
+    .bail()
+    .notEmpty()
+    .withMessage("title shouldn't be empty")
     .bail()
     .isLength({ max: 24 })
     .withMessage("max title length is 24"),
@@ -28,13 +28,13 @@ const challengeValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
-    .notEmpty()
-    .withMessage("description shouldn't be empty")
-    .bail()
     .isString()
     .withMessage(
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
+    .bail()
+    .notEmpty()
+    .withMessage("description shouldn't be empty")
     .bail()
     .isLength({ max: 120 })
     .withMessage("max description length is 120"),
@@ -45,11 +45,13 @@ const challengeValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
-    .notEmpty()
-    .withMessage("startDate shouldn't be empty")
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
     .bail()
     .isISO8601()
-    .withMessage("Invalid date format"),
+    .withMessage("startDate invalid date"),
 
   check("endDate")
     .exists()
@@ -57,11 +59,13 @@ const challengeValidator = [
       "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
     )
     .bail()
-    .notEmpty()
-    .withMessage("endDate shouldn't be empty")
+    .isString()
+    .withMessage(
+      "Verify the API docs in https://time-workout.herokuapp.com/docs/v1/"
+    )
     .bail()
     .isISO8601()
-    .withMessage("Invalid date format")
+    .withMessage("endDate invalid date")
     .bail()
     .custom((value, { req }) => {
       if (new Date(value) < new Date(req.body.startDate)) {
@@ -117,6 +121,9 @@ const challengeValidator = [
   handleResults,
 ];
 
+/**
+ * > Validate challenge ID in the URI
+ */
 const challengeIdValidator = [
   param("challengeid")
     .isNumeric()
