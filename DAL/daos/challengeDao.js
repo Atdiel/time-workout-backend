@@ -114,8 +114,10 @@ const removeOne = (challengeId) => {
     try {
       const con = await getConnection();
 
-      const query = "DELETE FROM `challenge` WHERE `challengeId` = ?;";
+      const query =
+        "DELETE `favoriteWorkout`, `challenge` FROM `favoriteWorkout` LEFT JOIN `challenge` ON (favoriteWorkout.challengeId = challenge.challengeId) WHERE challenge.challengeId = ?;";
       await con.query(query, [challengeId]);
+
       resolve();
     } catch (err) {
       reject(err);
