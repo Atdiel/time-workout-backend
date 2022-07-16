@@ -122,7 +122,8 @@ const removeOne = (tabataId) => {
     try {
       const con = await getConnection();
 
-      const query = "DELETE FROM `tabata` WHERE `tabataId` = ?;";
+      const query =
+        "DELETE `favoriteWorkout`, `tabata` FROM `favoriteWorkout` LEFT JOIN `tabata` ON (favoriteWorkout.tabataId = tabata.tabataId) WHERE tabata.tabataId = ?;";
       await con.query(query, [tabataId]);
 
       resolve();
