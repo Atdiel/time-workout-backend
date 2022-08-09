@@ -87,20 +87,24 @@ const updateAccount = (accountId, userData) => {
       }
 
       //COMMENT: asegurarse que no este introduciendo un correo ya registrado a menos que sea el suyo.
-      if (userFoundById.email !== userData.email) {
-        var checkEmailExist = await userModel.findOne({
-          email: userData.email,
-        });
-        if (checkEmailExist) {
-          reject([null, "Este Correo ya se a registrado", 409]);
+      if (userData.email) {
+        if (userFoundById.email !== userData.email) {
+          var checkEmailExist = await userModel.findOne({
+            email: userData.email,
+          });
+          if (checkEmailExist) {
+            reject([null, "Este Correo ya se a registrado", 409]);
+          }
         }
       }
 
       //COMMENT: encriptar la password.
-      const plainPassword = userData.password;
-      const hashedPassword = await hashPassword(plainPassword);
-      // Reemplazamos el valor de password por la password ya encriptada
-      userData = { ...userData, password: hashedPassword };
+      if (userData.password) {
+        const plainPassword = userData.password;
+        const hashedPassword = await hashPassword(plainPassword);
+        // Reemplazamos el valor de password por la password ya encriptada
+        userData = { ...userData, password: hashedPassword };
+      }
 
       //COMMENT: actualizar todos los datos del usuario.
       await userModel.update(accountId, userData);

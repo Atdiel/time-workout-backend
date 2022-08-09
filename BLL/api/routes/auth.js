@@ -15,6 +15,7 @@ const { authMiddleware } = require("../middlewares/tokenMiddleware");
 const {
   registerValidator,
   loginValidator,
+  updateValidator,
 } = require("../validators/authValidator");
 
 //* ROUTES ✈️✈️
@@ -104,6 +105,6 @@ router.post("/login", loginValidator, loginUser);
  *            schema:
  *              $ref: "#/components/schemas/userWithId"
  */
-router.put("/edit", registerValidator, authMiddleware, updateUser);
+router.put("/edit", authMiddleware, updateValidator, updateUser);
 
 module.exports = router;

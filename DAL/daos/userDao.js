@@ -79,39 +79,37 @@ const shift = (userId, userEntity) => {
       const profilePicture = userEntity.profilePicture;
       const nationality = userEntity.nationality;
 
-      // verificamos que exista el atributo @profilePicture para evitar errores
-      //FIXME: Siempre pasar por la request el valor de @profilePicture
-      if (!profilePicture) {
-        await con.query(
-          //UPDATE `user` SET `name` = ?, `lastname` = ?, `password` = ?, `email` = ?, `gender` = ?, `birthday` = ?, `nationality` = ?, WHERE `userId` = ?;
-          "UPDATE `user` SET `name` = ?, `lastname` = ?, `password` = ?, `email` = ?, `gender` = ?, `birthday` = ?, `nationality` = ? WHERE `userId` = ?;",
-          [
-            name,
-            lastName,
-            password,
-            email,
-            gender,
-            birthday,
-            nationality,
-            userId,
-          ]
-        );
-      } else {
-        await con.query(
-          "UPDATE `user` SET `name` = ?, `lastname` = ?, `password` = ?, `email` = ?, `gender` = ?, `birthday` = ?, `profilePicture` = ?, `nationality` = ? WHERE `userId` = ?;",
-          [
-            name,
-            lastName,
-            password,
-            email,
-            gender,
-            birthday,
-            profilePicture,
-            nationality,
-            userId,
-          ]
-        );
+      let values = [
+        name,
+        lastName,
+        password,
+        email,
+        gender,
+        birthday,
+        profilePicture,
+        nationality,
+      ];
+
+      values = values.filter((value) => {
+        return value !== undefined;
+      });
+
+      let query = `UPDATE user SET ${name ? "name = ?" : ""}${
+        lastName ? "lastname = ?" : ""
+      }${password ? "password = ?," : ""}${email ? "email = ?," : ""}${
+        gender ? "gender = ?," : ""
+      }${birthday ? "birthday = ?," : ""}${
+        profilePicture ? "profilePicture = ?," : ""
+      }${nationality ? "nationality = ?" : ""} WHERE userId = ?;`;
+
+      query = query.split(",");
+      for (let i = 0; i < values.length - 1; i++) {
+        query[i] = query[i] + ",";
       }
+      query = query.join(" ");
+
+      values.push(userId);
+      await con.query(query, values);
 
       resolve();
     } catch (err) {

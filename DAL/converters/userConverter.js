@@ -26,21 +26,29 @@ const toEntity = (userDto) => {
 
   // mediante split, map y join corregimos el "noMbrE UsuaRiO" -> "Nombre Usuario"
   name = name
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
+    ? name
+        .split(" ")
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(" ")
+    : undefined;
 
   // the same as above
   lastName = lastName
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
+    ? lastName
+        .split(" ")
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(" ")
+    : undefined;
 
   // genero solo debe ser mayuscula ["M", "F"]
-  gender = gender.toUpperCase();
+  gender = gender ? gender.toUpperCase() : undefined;
 
   //the same as above
-  nationality = nationality.toUpperCase();
+  nationality = nationality ? nationality.toUpperCase() : undefined;
 
   /**
    *

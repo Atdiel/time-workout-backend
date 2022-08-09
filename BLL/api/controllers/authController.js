@@ -48,8 +48,10 @@ const updateUser = async (req, res) => {
     const userId = req.user.id;
     //* Limpiamos la request dejando solo campos autorizados por validator-middleware
     const userData = matchedData(req);
+    if (Object.keys(userData).length !== 0) {
+      await authService.updateAccount(userId, userData);
+    }
 
-    await authService.updateAccount(userId, userData);
     res.send({ success: true });
   } catch (err) {
     handleHttpError(res, err);
